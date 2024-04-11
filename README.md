@@ -14,3 +14,4 @@ Creado para la materia de Ingenieria de Software.
   * Como jugador me gustaria guardar el proceso para recordar mis mejores puntuaciones.
   * Como jugador me gustaria poder elegir el nivel de dificultad para adaptarlo a mis habilidades.
   
+  * Como jugador me gustaria poder elegir el color de la rana.
