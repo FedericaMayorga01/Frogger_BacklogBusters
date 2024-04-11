@@ -13,5 +13,5 @@ Creado para la materia de Ingenieria de Software.
   * Como jugador me gustaria que la calle sea mas ancha para que la dificultad suba.
   * Como jugador me gustaria guardar el proceso para recordar mis mejores puntuaciones.
   * Como jugador me gustaria poder elegir el nivel de dificultad para adaptarlo a mis habilidades.
-  
   * Como jugador me gustaria poder elegir el color de la rana.
+  * Como jugador me gustaria que aparezcan potenciadores en la calle, que me ayuden a avanzar más fácilmente, tales como invencibilidad o reducción de la velocidad de los autos temporalmente.
