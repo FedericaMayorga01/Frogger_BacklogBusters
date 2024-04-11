@@ -1,10 +1,9 @@
-#! /usr/bin/env python
 import pygame
 import random as Random
 from pygame.locals import *
 from sys import exit
 
-
+# --- INICIALIZACION ------------------------------------------
 pygame.init()
 pygame.font.init()
 pygame.mixer.pre_init(44100, 32, 2, 4096)  #Configuracion de sonido
@@ -17,7 +16,7 @@ menu_font = pygame.font.SysFont(font_name, 36)
 screen = pygame.display.set_mode((448,546), 0, 32) #Crea la ventana de juego
 
 # --- IMAGENES  ----------------------------------------------
-#Cargar los nombres de las imagenes a usar:
+# Carga los nombres de las imagenes a usar:
 fondo_directorio = './images/bg.png'
 moves_directorio = './images/sprite_sheets_up.png'
 rana_directorio = './images/frog_arrived.png'
@@ -28,7 +27,7 @@ auto4_directorio = './images/car4.png'
 auto5_directorio = './images/car5.png'
 tronco_directorio = './images/tronco.png'
 
-#Convertir las imagenes en objetos dinamicos
+# Convierte las imagenes en objetos dinamicos
 fondo = pygame.image.load(fondo_directorio).convert()
 animacion = pygame.image.load(moves_directorio).convert_alpha()
 rana = pygame.image.load(rana_directorio).convert_alpha()
@@ -48,9 +47,9 @@ musica_fondo = pygame.mixer.Sound('./sounds/guimo.wav')
 pygame.display.set_caption('Frogger')
 clock = pygame.time.Clock()
 
-
+# ----------------------------------------------------------------
 class Object():
-    def __init__(self,position,sprite):  #Inicializador del objeto, con su posicion y dibujo(sprite)
+    def __init__(self,position,sprite):  #Inicializa el objeto, con su posicion y dibujo (sprite)
         self.sprite = sprite
         self.position = position
 
@@ -60,42 +59,49 @@ class Object():
     def rect(self):
         return Rect(self.position[0],self.position[1],self.sprite.get_width(),self.sprite.get_height())
 
-#Personaje principal
+# Personaje principal
 class Frog(Object):
-    def __init__(self,position,animacion): #Los mismos parametros que object, sumando la animacion
+    def __init__(self,position,animacion):      # Los mismos parametros que object, sumando la animacion
         self.sprite = animacion
         self.position = position
-        self.vidas = 3 #define cantidad de vidas
-        self.animation_counter = 0 # se utiliza para determinar qué cuadro de la animación se debe mostrar en un momento dado
-        self.animation_tick = 1 #velocidad de la animación, funciona como temporizador para saber cuadno actualizar la imagen
+        self.vidas = 3                          # Define cantidad de vidas
+        self.animation_counter = 0              # Se utiliza para determinar qué cuadro de la animación se debe mostrar en un momento dado
+        self.animation_tick = 1                 # velocidad de la animación, funciona como temporizador para saber cuadno actualizar la imagen
         self.way = "UP"
         self.can_move = 1
 
-    #Animaciones de movimiento
+    # Animaciones de movimiento
     def cambiar_animacion(self,key_pressed):
         if self.way != key_pressed:
             self.way = key_pressed
-            if self.way == "up": # Si la dirección es hacia arriba
+            # Si la dirección es hacia arriba
+            if self.way == "up":                                                        
                 moves_directorio = './images/sprite_sheets_up.png'
                 self.sprite = pygame.image.load(moves_directorio).convert_alpha()
-            elif self.way == "down": # Si la dirección es hacia abajo
+            # Si la dirección es hacia abajo
+            elif self.way == "down":                                                    
                 moves_directorio = './images/sprite_sheets_down.png'
                 self.sprite = pygame.image.load(moves_directorio).convert_alpha()
-            elif self.way == "left": # Si la dirección es hacia la izquierda
+            # Si la dirección es hacia la izquierda
+            elif self.way == "left": 
                 moves_directorio = './images/sprite_sheets_left.png'
                 self.sprite = pygame.image.load(moves_directorio).convert_alpha()
-            elif self.way == "right": # Si la dirección es hacia la derecha
+            # Si la dirección es hacia la derecha
+            elif self.way == "right": 
                 moves_directorio = './images/sprite_sheets_right.png'
                 self.sprite = pygame.image.load(moves_directorio).convert_alpha()
 
-    #Movimientos del personaje
+    # Movimientos del personaje
     def mover_rana(self,key_pressed, key_up):
-       # Aún necesitamos manejar los límites de la pantalla
-       # El movimiento horizontal aún no está correcto
-        if self.animation_counter == 0 : #Si el contador esta en cero, la animacion debe cambiar segun a donde se movio
-            self.cambiar_animacion(key_pressed) #Lamma al metodo para cargar la prox animacion 
+    # TODO:     Aún necesitamos manejar los límites de la pantalla
+    #           El movimiento horizontal aún no está correcto
+        # Si el contador esta en cero, la animacion debe cambiar segun a donde se movio
+        if self.animation_counter == 0 : 
+            # LLama al metodo para cargar la prox animacion 
+            self.cambiar_animacion(key_pressed) 
         self.prox_animacion()
-        if key_up == 1: #identifica que tecla fue presionada y hacia donde moverse, sin salirse de pantalla
+        # Identifica que tecla fue presionada y hacia donde moverse, sin salirse de pantalla
+        if key_up == 1: 
             if key_pressed == "up":
                 if self.position[1] > 39:
                     self.position[1] = self.position[1]-13
@@ -115,35 +121,38 @@ class Frog(Object):
                     else:
                         self.position[0] = self.position[0]+14
 
-    #Controlar los contadores de animaciones
+    # Controla los contadores de animaciones
     def animateFrog(self,key_pressed,key_up):
-        if self.animation_counter != 0 :    #si no esta en su estado inicial
-            if self.animation_tick <= 0 :   #verifica si es momento de cambiar de animacion
+        # Si no esta en su estado inicial
+        if self.animation_counter != 0 :    
+            # Verifica si es momento de cambiar de animacion
+            if self.animation_tick <= 0 :   
                 self.mover_rana(key_pressed,key_up)
                 self.animation_tick = 1
             else :
                 self.animation_tick = self.animation_tick - 1
 
-    #Establecer posicion
+    # Establece la posicion
     def setPos(self,position):
         self.position = position
 
-    #Disminuye vidas
+    # Disminuye las vidas
     def perder_vida(self):
         self.vidas = self.vidas - 1
 
-    #Establece la incapacidad de movimeinto de la rana
+    # Establece la incapacidad de movimeinto de la rana
     def cannotMove(self):
         self.can_move = 0
 
-    #Incrementa el contador para pasar a la proxima animacion
+    # Incrementa el contador para pasar a la proxima animacion
     def prox_animacion(self):
         self.animation_counter = self.animation_counter + 1
-        if self.animation_counter == 3 :  #si alcanza el limite de animaciones se reinicia
+        # Si alcanza el limite de animaciones, se reinicia
+        if self.animation_counter == 3 :  
             self.animation_counter = 0
             self.can_move = 1
 
-    #Perder, reinicia los valores
+    # Cuando se pierde, se reinician los valores
     def frogDead(self,game): 
         self.setPos_inicial() 
         self.perder_vida()
@@ -153,35 +162,38 @@ class Frog(Object):
         self.way = "UP" 
         self.can_move = 1
 
-    #Establece la posicion inicial, abajo al medio
+    # Establece la posicion inicial, centrada
     def setPos_inicial(self):
         self.position = [207, 475]
 
-    #Dibujar al personaje en la posicion y animacion indicada
+    # Dibuja al personaje en la posicion y animacion indicada
     def draw(self):
         animacion_actual = self.animation_counter * 30
         screen.blit(self.sprite,(self.position),(0 + animacion_actual, 0, 30, 30 + animacion_actual))
 
-    #Determina en un rectangulo el area ocupada por la raana
+    # Determina en un rectangulo el area ocupada por la rana
     def rect(self):
         return Rect(self.position[0],self.position[1],30,30)
 
-#Todo objeto que hace perder a la rana
+# Los objetos que hacen perder a la rana
 class Enemy(Object):  
     def __init__(self,position,sprite_enemy,way,factor): 
-        self.sprite = sprite_enemy #Visual que representa el enemigo
+        # Visual que representa el enemigo
+        self.sprite = sprite_enemy 
         self.position = position 
-        self.way = way #Direccion a la que tiene permitido moverse 
-        self.factor = factor #factor para determinar lavelocidad de movimiento
+        # Direccion a la que tiene permitido moverse 
+        self.way = way 
+        # Factor para determinar la velocidad de movimiento
+        self.factor = factor 
 
-    #Determina el movimiento y la velocidad del enemigo
+    # Determina el movimiento y la velocidad del enemigo
     def move(self,speed):
         if self.way == "right":
             self.position[0] = self.position[0] + speed * self.factor
         elif self.way == "left":
             self.position[0] = self.position[0] - speed * self.factor
 
-#Plataformas moviles en las partes de agua, permiten a la rana cruzar
+# Plataformas moviles en las partes de agua, permiten que la rana cruce
 class Plataform(Object):
     def __init__(self,position,tronco,way):
         self.sprite = tronco
@@ -194,7 +206,7 @@ class Plataform(Object):
         elif self.way == "left":
             self.position[0] = self.position[0] - speed
 
-#Estado del juego
+# Estado del juego
 class Game():
     def __init__(self,speed,level):
         self.speed = speed
@@ -203,40 +215,40 @@ class Game():
         self.time = 30
         self.gameInit = 0
 
-    #Incrementar nivel
+    # Incrementa el nivel
     def incLevel(self):
         self.level = self.level + 1
 
-    #Incrementar velocidad
+    # Incrementa la velocidad
     def incSpeed(self):
         self.speed = self.speed + 1
 
-    #Incrementar puntos
+    # Incrementa los puntos
     def incPoints(self,points):
         self.points = self.points + points
 
-    #Decrementar el tiempo restante de juego
+    # Decrementa el tiempo restante de juego
     def decTime(self):
         self.time = self.time - 1
 
-    #Restablecer tiempo
+    # Restablece el tiempo
     def resetTime(self):
         self.time = 30
 
 
-#---FUNCIONES GENERALES -------------------------------
+# --- FUNCIONES GENERALES -------------------------------
 
-#Dibujar en pantalla una lista de objetos
+# Dibuja en pantalla una lista de objetos
 def drawList(list):
     for i in list:
         i.draw()
 
-#Mover todos los elementos de la lista
+# Mueve todos los elementos de la lista
 def moveList(list,speed):
     for i in list:
         i.move(speed)
 
-#Eliminar los enemigos que se pasan de los limites pantalla
+# Elimina los enemigos que se pasan de los limites pantalla
 def destroyEnemys(list):
     for i in list:
         if i.position[0] < -80:
@@ -244,7 +256,7 @@ def destroyEnemys(list):
         elif i.position[0] > 516:
             list.remove(i)
 
-#Eliminar las plataformas que se pasan de los limites pantalla
+# Elimina las plataformas que se pasan de los limites pantalla
 def destroyPlataforms(list):
     for i in list:
         if i.position[0] < -100:
@@ -252,39 +264,49 @@ def destroyPlataforms(list):
         elif i.position[0] > 448:
             list.remove(i)
 
-#Inicializar enemigo
-def createEnemys(list,enemys,game): #list=contaodres para controlar el tiempo entre la creacion de enemigos,
+# Inicializa el enemigo
+def createEnemys(list,enemys,game): 
+    # list = contaodres para controlar el tiempo entre la creacion de enemigos
     for i, tick in enumerate(list):
         list[i] = list[i] - 1
         if tick <= 0:
-            if i == 0:  # Si el contador llega a cero, crea un nuevo enemigo y reinicia el contador.
+            # Si el contador llega a cero, crea un nuevo enemigo y reinicia el contador.
+            if i == 0:  
                 #Enemigo tipo 1
                 list[0] = (40*game.speed)/game.level
                 position_init = [-55,436]
                 enemy = Enemy(position_init,auto1,"right",1)
                 enemys.append(enemy)
-            elif i == 1: # Configuración del segundo tipo de enemigo.
+
+            # Configuración del segundo tipo de enemigo.
+            elif i == 1: 
                 list[1] = (30*game.speed)/game.level
                 position_init = [506, 397]
                 enemy = Enemy(position_init,auto2,"left",2)
                 enemys.append(enemy)
-            elif i == 2:   # Configuración del tercer tipo de enemigo.
+
+            # Configuración del tercer tipo de enemigo.
+            elif i == 2:   
                 list[2] = (40*game.speed)/game.level
                 position_init = [-80, 357]
                 enemy = Enemy(position_init,auto3,"right",2)
                 enemys.append(enemy)
-            elif i == 3: # Configuración del cuarto tipo de enemigo.
+
+            # Configuración del cuarto tipo de enemigo.
+            elif i == 3: 
                 list[3] = (30*game.speed)/game.level
                 position_init = [516, 318]
                 enemy = Enemy(position_init,auto4,"left",1)
                 enemys.append(enemy)
-            elif i == 4:  # Configuración del quinto tipo de enemigo.
+            
+            # Configuración del quinto tipo de enemigo.
+            elif i == 4:  
                 list[4] = (50*game.speed)/game.level
                 position_init = [-56, 280]
                 enemy = Enemy(position_init,auto5,"right",1)
                 enemys.append(enemy)
 
-#Agregar plataforma para saltar
+# Agrega plataformas para saltar
 def createPlataform(list,plataforms,game):
     for i, tick in enumerate(list):
         list[i] = list[i] - 1
@@ -294,21 +316,25 @@ def createPlataform(list,plataforms,game):
                 position_init = [-100,200]
                 plataform = Plataform(position_init,tronco,"right")
                 plataforms.append(plataform)
+
             elif i == 1:
                 list[1] = (30*game.speed)/game.level
                 position_init = [448, 161]
                 plataform = Plataform(position_init,tronco,"left")
                 plataforms.append(plataform)
+
             elif i == 2:
                 list[2] = (40*game.speed)/game.level
                 position_init = [-100, 122]
                 plataform = Plataform(position_init,tronco,"right")
                 plataforms.append(plataform)
+
             elif i == 3:
                 list[3] = (40*game.speed)/game.level
                 position_init = [448, 83]
                 plataform = Plataform(position_init,tronco,"left")
                 plataforms.append(plataform)
+
             elif i == 4:
                 list[4] = (20*game.speed)/game.level
                 position_init = [-100, 44]
@@ -316,9 +342,9 @@ def createPlataform(list,plataforms,game):
                 plataforms.append(plataform)
 
 
-#Comprueba si la rana chocó con algun enemigo
+# Comprueba si la rana chocó con algun enemigo
 def rana_calle(frog,enemys,game):
-    #Compara las areas con el metodo rect del los objetos y la rana
+    # Compara las areas con el metodo rect del los objetos y la rana
     for i in enemys:
         enemyRect = i.rect()
         frogRect = frog.rect()
@@ -326,12 +352,13 @@ def rana_calle(frog,enemys,game):
             musica_perder.play()
             frog.frogDead(game)
 
-#Confirma si la rana está sobre alguna plataforma cuandoo está en el lago
+# Confirma si la rana está sobre alguna plataforma cuando está en el lago
 def rana_lago(frog,plataforms,game):
-    #Si la rana esta sobre una plataforma, se debe mover con ella
-    #Si la rana no esta sobre ninguna. se muere
+    # Si la rana esta sobre una plataforma, se debe mover con ella
+    # Si la rana no esta sobre ninguna, se muere
 
-    seguro = 0 #determina si estaa sobre alguna plataforma 
+    # Se determina si esta sobre alguna plataforma 
+    seguro = 0 
     wayPlataform = ""
     for i in plataforms:
         plataformRect = i.rect()
@@ -340,18 +367,20 @@ def rana_lago(frog,plataforms,game):
             seguro = 1
             wayPlataform = i.way
 
-    if seguro == 0: # Si la rana no está sobre ninguna plataforma
+    # Si la rana no está sobre ninguna plataforma
+    if seguro == 0: 
         musica_agua.play()
         frog.frogDead(game)
 
-    elif seguro == 1: # Si la rana está sobre una plataforma
+    # Si la rana está sobre una plataforma
+    elif seguro == 1: 
         if wayPlataform == "right":
             frog.position[0] = frog.position[0] + game.speed
 
         elif wayPlataform == "left":
             frog.position[0] = frog.position[0] - game.speed
 
-#Comprueba si la rana llega a la zona de llegada y si lo hace, crea un marcador en esa posición
+# Comprueba si la rana llega a la zona de llegada y si lo hace, crea un marcador en esa posición
 def frogArrived(frog,llegadas,game):
     if frog.position[0] > 33 and frog.position[0] < 53:
         position_init = [43,7]
@@ -372,41 +401,42 @@ def frogArrived(frog,llegadas,game):
     elif frog.position[0] > 361 and frog.position[0] < 381:
         position_init = [371,7]
         createArrived(frog,llegadas,game,position_init)
-
-    else:
+    
+    else:  
         frog.position[1] = 46
         frog.animation_counter = 0
         frog.animation_tick = 1
         frog.can_move = 1
 
-
+# Da la ubicacion de la rana y llama a las funciones correspondientes
 def ubicacion_rana(frog):
-    #Si esta en la carretera
+    # Si esta en la carretera
     if frog.position[1] > 240 :
         rana_calle(frog,enemys,game)
 
-    #Si llega al rio
+    # Si llega al rio
     elif frog.position[1] < 240 and frog.position[1] > 40:
         rana_lago(frog,plataforms,game)
 
-    #Si alcanzó la meta
+    # Si alcanzó la meta
     elif frog.position[1] < 40 :
         frogArrived(frog,llegadas,game)
 
-#Llegada, termina el nivel
+# Crea un marcador en la zona de llegada
 def createArrived(frog,llegadas,game,position_init):
     llegada_rana = Object(position_init,rana)
     llegadas.append(llegada_rana)
     musica_exito.play()
-    frog.setPos_inicial() #Restablece la posicion inicial
+    # Restablece la posicion inicial
+    frog.setPos_inicial() 
     game.incPoints(10 + game.time)
     game.resetTime()
     frog.animation_counter = 0
     frog.animation_tick = 1
     frog.can_move = 1
 
-#Proximo nivel
-def nextLevel(llegadas,enemys,plataforms,frog,game):
+# Crea el proximo nivel
+def nextLevel(llegadas, enemys, plataforms, frog, game):
     if len(llegadas) == 5:
         llegadas[:] = []
         frog.setPos_inicial()
@@ -416,12 +446,12 @@ def nextLevel(llegadas,enemys,plataforms,frog,game):
         game.resetTime()
 
 
-#---INICIALIZAR -------------------------------------------------------
+#--- INICIALIZA EL JUEGO -------------------------------------
 musica_fondo.play(-1)
-text_info = menu_font.render(('Presiona cualquier tecla para iniciar!'),1,(0,0,0))
+text_info = menu_font.render(('Presiona cualquier tecla para iniciar!'), 1, (0, 0, 0))
 gameInit = 0
 
-#Inicializa el juego
+# Inicializa el juego
 while gameInit == 0:
     for event in pygame.event.get():
         if event.type == QUIT:
@@ -431,42 +461,48 @@ while gameInit == 0:
 
      # Dibuja el fondo y el texto del menú en la pantalla
     screen.blit(fondo, (0, 0))
-    screen.blit(text_info,(5,150))
+    screen.blit(text_info, (5, 150))
     pygame.display.update()
 
-#Luego de presionar alguna tecla
+# Luego de presionar alguna tecla
 while True:
     gameInit = 1
-    game = Game(3,1) #Velocidad y nivel inicial
+    # Velocidad y nivel inicial
+    game = Game(3, 1) 
     key_up = 1
-    frog_initial_position = [207,475]
-    frog = Frog(frog_initial_position,animacion)
-
+    frog_initial_position = [207, 475]
+    frog = Frog(frog_initial_position, animacion)
+    # Listas de enemigos, plataformas y llegadas en el juego
     enemys = []
     plataforms = []
     llegadas = []
-    #30 ticks == 1 segundo
-    ticks_enemys = [30, 0, 30, 0, 60] #Frecuencia de los enemigos
-    ticks_plataforms = [0, 0, 30, 30, 30] #Frecuencia de las plataformas
+    # 30 ticks == 1 segundo
+    # Frecuencia de los enemigos
+    ticks_enemys = [30, 0, 30, 0, 60] 
+    # Frecuencia de las plataformas
+    ticks_plataforms = [0, 0, 30, 30, 30] 
     ticks_time = 30
     pressed_keys = 0
     key_pressed = 0
 
-    #Ciclo principal de juego
+    # Ciclo principal de juego
     while frog.vidas > 0:
-
+        # Eventos del juego
         for event in pygame.event.get():
             if event.type == QUIT:
-                exit() #Si se cierra la ventana terminar juego
+                # Si se cierra la ventana terminar juego
+                exit() 
             if event.type == KEYUP:
-                key_up = 1 #Tecla dejada de presionar
+                # Si se deja de presionar una tecla
+                key_up = 1 
             if event.type == KEYDOWN: 
-                if key_up == 1 and frog.can_move == 1 : #Tecla presionada
+                #Si se presiona una tecla
+                if key_up == 1 and frog.can_move == 1 : 
                     key_pressed = pygame.key.name(event.key)
-                    frog.mover_rana(key_pressed,key_up)
+                    frog.mover_rana(key_pressed, key_up)
                     frog.cannotMove()
 
-        #Tiempo de vida de la rana
+        # Tiempo de vida de la rana
         if not ticks_time:
             ticks_time = 30
             game.decTime()
@@ -476,42 +512,43 @@ while True:
         if game.time == 0:
             frog.frogDead(game)
 
-        #Agregar elementos extra    
-        createEnemys(ticks_enemys,enemys,game)
-        createPlataform(ticks_plataforms,plataforms,game)
+        # Agrega elementos extra    
+        createEnemys(ticks_enemys, enemys, game)
+        createPlataform(ticks_plataforms, plataforms, game)
 
-        #Mueve los extras
-        moveList(enemys,game.speed)
-        moveList(plataforms,game.speed)
+        # Mueve los elementos extra
+        moveList(enemys, game.speed)
+        moveList(plataforms, game.speed)
 
         ubicacion_rana(frog)
 
-        nextLevel(llegadas,enemys,plataforms,frog,game)
+        nextLevel(llegadas, enemys, plataforms, frog, game)
 
-        #Informacion sobre el jeugo en pantalla
-        text_info1 = info_font.render(('Nivel: {0}               Puntos: {1}'.format(game.level,game.points)),1,(255,255,255))
-        text_info2 = info_font.render(('Tiempo: {0}           Vidas: {1}'.format(game.time,frog.vidas)),1,(255,255,255))
+        # Informacion sobre el juego en pantalla
+        text_info1 = info_font.render(('Nivel: {0}               Puntos: {1}'.format(game.level, game.points)), 1, (255, 255, 255))
+        text_info2 = info_font.render(('Tiempo: {0}           Vidas: {1}'.format(game.time, frog.vidas)), 1, (255, 255, 255))
+        # Se dibuja el fondo y la informacion en pantalla
         screen.blit(fondo, (0, 0))
-        screen.blit(text_info1,(10,520))
-        screen.blit(text_info2,(250,520))
+        screen.blit(text_info1, (10, 520))
+        screen.blit(text_info2, (250, 520))
 
-        #Dibuja extras
+        # Dibuja los elementos extras
         drawList(enemys)
         drawList(plataforms)
         drawList(llegadas)
 
-        #Movimientos y animaciones de rana
+        # Movimientos y animaciones de la rana
         frog.animateFrog(key_pressed,key_up)
         frog.draw()
 
-        #Destruye enemigos que salen de pantalla
+        # Destruye los elementos extra que salen de pantalla
         destroyEnemys(enemys)
         destroyPlataforms(plataforms)
 
         pygame.display.update()
         time_passed = clock.tick(30)
 
-    #En caso de perder las tres vidas
+    # En caso de perder las tres vidas
     while gameInit == 1:
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -520,11 +557,13 @@ while True:
                 gameInit = 0
 
         screen.blit(fondo, (0, 0))
+        # Define los textos de la pantalla
         text = game_font.render('GAME OVER', 1, (255, 0, 0))
-        text_points = game_font.render(('Puntuacion: {0}'.format(game.points)),1,(255,0,0))
-        text_reiniciar = info_font.render('Presione cualquier tecla para reiniciar!',1,(255,0,0))
+        text_points = game_font.render(('Puntuacion: {0}'.format(game.points)), 1, (255, 0, 0))
+        text_reiniciar = info_font.render('Presione cualquier tecla para reiniciar!', 1, (255, 0, 0))
+        # Se dibuja el texto sobre la pantalla
         screen.blit(text, (75, 120))
-        screen.blit(text_points,(10,170))
-        screen.blit(text_reiniciar,(70,250))
+        screen.blit(text_points, (10, 170))
+        screen.blit(text_reiniciar, (70, 250))
 
         pygame.display.update()
