@@ -1,5 +1,10 @@
+from Resources.Object import Object
+from Resources.Frog import Frog
+from Resources.Enemy import Enemy
+from Resources.Plataform import Plataform
+from Resources.Game import Game
+from Global import Global
 import pygame
-import random as Random
 from pygame.locals import *
 from sys import exit
 
@@ -13,7 +18,7 @@ game_font = pygame.font.SysFont(font_name, 72)
 info_font = pygame.font.SysFont(font_name, 24)
 menu_font = pygame.font.SysFont(font_name, 36)
 
-screen = pygame.display.set_mode((448,546), 0, 32) #Crea la ventana de juego
+#screen = pygame.display.set_mode((448,546), 0, 32) #Crea la ventana de juego
 
 # --- IMAGENES  ----------------------------------------------
 # Carga los nombres de las imagenes a usar:
@@ -39,201 +44,13 @@ auto5 = pygame.image.load(auto5_directorio).convert_alpha()
 tronco = pygame.image.load(tronco_directorio).convert_alpha()
 
 # --- SONIDO --------------------------------------------------
-musica_perder = pygame.mixer.Sound('./sounds/boom.wav')
-musica_agua = pygame.mixer.Sound('./sounds/agua.wav')
-musica_exito = pygame.mixer.Sound('./sounds/success.wav')
-musica_fondo = pygame.mixer.Sound('./sounds/guimo.wav')
+musica_perder = pygame.mixer.Sound('sounds/boom.wav')
+musica_agua = pygame.mixer.Sound('sounds/agua.wav')
+musica_exito = pygame.mixer.Sound('sounds/success.wav')
+musica_fondo = pygame.mixer.Sound('sounds/guimo.wav')
 
 pygame.display.set_caption('Frogger')
 clock = pygame.time.Clock()
-
-# ----------------------------------------------------------------
-class Object():
-    def __init__(self,position,sprite):  #Inicializa el objeto, con su posicion y dibujo (sprite)
-        self.sprite = sprite
-        self.position = position
-
-    def draw(self):
-        screen.blit(self.sprite,(self.position))
-
-    def rect(self):
-        return Rect(self.position[0],self.position[1],self.sprite.get_width(),self.sprite.get_height())
-
-# Personaje principal
-class Frog(Object):
-    def __init__(self,position,animacion):      # Los mismos parametros que object, sumando la animacion
-        self.sprite = animacion
-        self.position = position
-        self.vidas = 3                          # Define cantidad de vidas
-        self.animation_counter = 0              # Se utiliza para determinar qué cuadro de la animación se debe mostrar en un momento dado
-        self.animation_tick = 1                 # velocidad de la animación, funciona como temporizador para saber cuadno actualizar la imagen
-        self.way = "UP"
-        self.can_move = 1
-
-    # Animaciones de movimiento
-    def cambiar_animacion(self,key_pressed):
-        if self.way != key_pressed:
-            self.way = key_pressed
-            # Si la dirección es hacia arriba
-            if self.way == "up":                                                        
-                moves_directorio = './images/sprite_sheets_up.png'
-                self.sprite = pygame.image.load(moves_directorio).convert_alpha()
-            # Si la dirección es hacia abajo
-            elif self.way == "down":                                                    
-                moves_directorio = './images/sprite_sheets_down.png'
-                self.sprite = pygame.image.load(moves_directorio).convert_alpha()
-            # Si la dirección es hacia la izquierda
-            elif self.way == "left": 
-                moves_directorio = './images/sprite_sheets_left.png'
-                self.sprite = pygame.image.load(moves_directorio).convert_alpha()
-            # Si la dirección es hacia la derecha
-            elif self.way == "right": 
-                moves_directorio = './images/sprite_sheets_right.png'
-                self.sprite = pygame.image.load(moves_directorio).convert_alpha()
-
-    # Movimientos del personaje
-    def mover_rana(self,key_pressed, key_up):
-    # TODO:     Aún necesitamos manejar los límites de la pantalla
-    #           El movimiento horizontal aún no está correcto
-        # Si el contador esta en cero, la animacion debe cambiar segun a donde se movio
-        if self.animation_counter == 0 : 
-            # LLama al metodo para cargar la prox animacion 
-            self.cambiar_animacion(key_pressed) 
-        self.prox_animacion()
-        # Identifica que tecla fue presionada y hacia donde moverse, sin salirse de pantalla
-        if key_up == 1: 
-            if key_pressed == "up":
-                if self.position[1] > 39:
-                    self.position[1] = self.position[1]-13
-            elif key_pressed == "down":
-                if self.position[1] < 473:
-                    self.position[1] = self.position[1]+13
-            if key_pressed == "left":
-                if self.position[0] > 2:
-                    if self.animation_counter == 2 :
-                        self.position[0] = self.position[0]-13
-                    else:
-                        self.position[0] = self.position[0]-14
-            elif key_pressed == "right":
-                if self.position[0] < 401:
-                    if self.animation_counter == 2 :
-                        self.position[0] = self.position[0]+13
-                    else:
-                        self.position[0] = self.position[0]+14
-
-    # Controla los contadores de animaciones
-    def animateFrog(self,key_pressed,key_up):
-        # Si no esta en su estado inicial
-        if self.animation_counter != 0 :    
-            # Verifica si es momento de cambiar de animacion
-            if self.animation_tick <= 0 :   
-                self.mover_rana(key_pressed,key_up)
-                self.animation_tick = 1
-            else :
-                self.animation_tick = self.animation_tick - 1
-
-    # Establece la posicion
-    def setPos(self,position):
-        self.position = position
-
-    # Disminuye las vidas
-    def perder_vida(self):
-        self.vidas = self.vidas - 1
-
-    # Establece la incapacidad de movimeinto de la rana
-    def cannotMove(self):
-        self.can_move = 0
-
-    # Incrementa el contador para pasar a la proxima animacion
-    def prox_animacion(self):
-        self.animation_counter = self.animation_counter + 1
-        # Si alcanza el limite de animaciones, se reinicia
-        if self.animation_counter == 3 :  
-            self.animation_counter = 0
-            self.can_move = 1
-
-    # Cuando se pierde, se reinician los valores
-    def frogDead(self,game): 
-        self.setPos_inicial() 
-        self.perder_vida()
-        game.resetTime()
-        self.animation_counter = 0
-        self.animation_tick = 1
-        self.way = "UP" 
-        self.can_move = 1
-
-    # Establece la posicion inicial, centrada
-    def setPos_inicial(self):
-        self.position = [207, 475]
-
-    # Dibuja al personaje en la posicion y animacion indicada
-    def draw(self):
-        animacion_actual = self.animation_counter * 30
-        screen.blit(self.sprite,(self.position),(0 + animacion_actual, 0, 30, 30 + animacion_actual))
-
-    # Determina en un rectangulo el area ocupada por la rana
-    def rect(self):
-        return Rect(self.position[0],self.position[1],30,30)
-
-# Los objetos que hacen perder a la rana
-class Enemy(Object):  
-    def __init__(self,position,sprite_enemy,way,factor): 
-        # Visual que representa el enemigo
-        self.sprite = sprite_enemy 
-        self.position = position 
-        # Direccion a la que tiene permitido moverse 
-        self.way = way 
-        # Factor para determinar la velocidad de movimiento
-        self.factor = factor 
-
-    # Determina el movimiento y la velocidad del enemigo
-    def move(self,speed):
-        if self.way == "right":
-            self.position[0] = self.position[0] + speed * self.factor
-        elif self.way == "left":
-            self.position[0] = self.position[0] - speed * self.factor
-
-# Plataformas moviles en las partes de agua, permiten que la rana cruce
-class Plataform(Object):
-    def __init__(self,position,tronco,way):
-        self.sprite = tronco
-        self.position = position
-        self.way = way
-
-    def move(self,speed):
-        if self.way == "right":
-            self.position[0] = self.position[0] + speed
-        elif self.way == "left":
-            self.position[0] = self.position[0] - speed
-
-# Estado del juego
-class Game():
-    def __init__(self,speed,level):
-        self.speed = speed
-        self.level = level
-        self.points = 0
-        self.time = 30
-        self.gameInit = 0
-
-    # Incrementa el nivel
-    def incLevel(self):
-        self.level = self.level + 1
-
-    # Incrementa la velocidad
-    def incSpeed(self):
-        self.speed = self.speed + 1
-
-    # Incrementa los puntos
-    def incPoints(self,points):
-        self.points = self.points + points
-
-    # Decrementa el tiempo restante de juego
-    def decTime(self):
-        self.time = self.time - 1
-
-    # Restablece el tiempo
-    def resetTime(self):
-        self.time = 30
 
 
 # --- FUNCIONES GENERALES -------------------------------
@@ -428,7 +245,7 @@ def createArrived(frog,llegadas,game,position_init):
     llegadas.append(llegada_rana)
     musica_exito.play()
     # Restablece la posicion inicial
-    frog.setPos_inicial() 
+    frog.setPos_inicial()
     game.incPoints(10 + game.time)
     game.resetTime()
     frog.animation_counter = 0
@@ -460,15 +277,15 @@ while gameInit == 0:
             gameInit = 1
 
      # Dibuja el fondo y el texto del menú en la pantalla
-    screen.blit(fondo, (0, 0))
-    screen.blit(text_info, (5, 150))
+    Global.screen.blit(fondo, (0, 0))
+    Global.screen.blit(text_info, (5, 150))
     pygame.display.update()
 
 # Luego de presionar alguna tecla
 while True:
     gameInit = 1
     # Velocidad y nivel inicial
-    game = Game(3, 1) 
+    game = Game(3, 1)
     key_up = 1
     frog_initial_position = [207, 475]
     frog = Frog(frog_initial_position, animacion)
@@ -528,9 +345,9 @@ while True:
         text_info1 = info_font.render(('Nivel: {0}               Puntos: {1}'.format(game.level, game.points)), 1, (255, 255, 255))
         text_info2 = info_font.render(('Tiempo: {0}           Vidas: {1}'.format(game.time, frog.vidas)), 1, (255, 255, 255))
         # Se dibuja el fondo y la informacion en pantalla
-        screen.blit(fondo, (0, 0))
-        screen.blit(text_info1, (10, 520))
-        screen.blit(text_info2, (250, 520))
+        Global.screen.blit(fondo, (0, 0))
+        Global.screen.blit(text_info1, (10, 520))
+        Global.screen.blit(text_info2, (250, 520))
 
         # Dibuja los elementos extras
         drawList(enemys)
@@ -556,14 +373,14 @@ while True:
             if event.type == KEYDOWN:
                 gameInit = 0
 
-        screen.blit(fondo, (0, 0))
+        Global.screen.blit(fondo, (0, 0))
         # Define los textos de la pantalla
         text = game_font.render('GAME OVER', 1, (255, 0, 0))
         text_points = game_font.render(('Puntuacion: {0}'.format(game.points)), 1, (255, 0, 0))
         text_reiniciar = info_font.render('Presione cualquier tecla para reiniciar!', 1, (255, 0, 0))
         # Se dibuja el texto sobre la pantalla
-        screen.blit(text, (75, 120))
-        screen.blit(text_points, (10, 170))
-        screen.blit(text_reiniciar, (70, 250))
+        Global.screen.blit(text, (75, 120))
+        Global.screen.blit(text_points, (10, 170))
+        Global.screen.blit(text_reiniciar, (70, 250))
 
         pygame.display.update()
