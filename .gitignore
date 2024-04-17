@@ -1,2 +1,4 @@
-# Archivos temporales 
+# Archivos temporales
+__pycache__
 tempCodeRunnerFile.py
+.idea
