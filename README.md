@@ -1,17 +1,12 @@
 # Frogger_BacklogBusters
 Creado para la materia de Ingenieria de Software.
 
-### Integrantes:  
+## Integrantes:  
   * Arbach, Jorge  
   * Mayorga, Federica  
   * Nou, Sol  
   * Pillichody, Felipe  
 
-#### Historias de Usuario:
-  * Como jugador me gustaria obtener puntos para comprar skins de la rana para que sea mas personalizado.
-  * Como jugador me gustaria que la musica cambie para que no sea tan repetitivo.
-  * Como jugador me gustaria que la calle sea mas ancha para que la dificultad suba.
-  * Como jugador me gustaria guardar el proceso para recordar mis mejores puntuaciones.
-  * Como jugador me gustaria poder elegir el nivel de dificultad para adaptarlo a mis habilidades.
-  * Como jugador me gustaria poder elegir el color de la rana.
-  * Como jugador me gustaria que aparezcan potenciadores en la calle, que me ayuden a avanzar más fácilmente, tales como invencibilidad o reducción de la velocidad de los autos temporalmente.
+### Documentacion:
+  * Historias de Usuario: https://federicamayorga.notion.site/Historias-de-Usuario-797fd1f98a5b4edf96e3f5ae782603fe?pvs=4
+  * Diagramas: https://federicamayorga.notion.site/Diagramas-31e7361b31cb43d1b411db2a056e51b9?pvs=4
