@@ -1,9 +1,9 @@
-from Resources.Object import Object
-from Resources.Frog import Frog
-from Resources.Enemy import Enemy
-from Resources.Plataform import Plataform
-from Resources.Game import Game
-from Global import Global
+from src.Object import Object
+from src.Frog import Frog
+from src.Enemy import Enemy
+from src.Plataform import Plataform
+from src.Game import Game
+from src.Global import Global
 import pygame
 from pygame.locals import *
 from sys import exit
@@ -22,15 +22,15 @@ menu_font = pygame.font.SysFont(font_name, 36)
 
 # --- IMAGENES  ----------------------------------------------
 # Carga los nombres de las imagenes a usar:
-fondo_directorio = './images/bg.png'
-moves_directorio = './images/sprite_sheets_up.png'
-rana_directorio = './images/frog_arrived.png'
-auto1_directorio = './images/car1.png'
-auto2_directorio = './images/car2.png'
-auto3_directorio = './images/car3.png'
-auto4_directorio = './images/car4.png'
-auto5_directorio = './images/car5.png'
-tronco_directorio = './images/tronco.png'
+fondo_directorio = './res/img/bg.png'
+moves_directorio = './res/img/sprite_sheets_up.png'
+rana_directorio = './res/img/frog_arrived.png'
+auto1_directorio = './res/img/car1.png'
+auto2_directorio = './res/img/car2.png'
+auto3_directorio = './res/img/car3.png'
+auto4_directorio = './res/img/car4.png'
+auto5_directorio = './res/img/car5.png'
+tronco_directorio = './res/img/tronco.png'
 
 # Convierte las imagenes en objetos dinamicos
 fondo = pygame.image.load(fondo_directorio).convert()
@@ -44,10 +44,10 @@ auto5 = pygame.image.load(auto5_directorio).convert_alpha()
 tronco = pygame.image.load(tronco_directorio).convert_alpha()
 
 # --- SONIDO --------------------------------------------------
-musica_perder = pygame.mixer.Sound('sounds/boom.wav')
-musica_agua = pygame.mixer.Sound('sounds/agua.wav')
-musica_exito = pygame.mixer.Sound('sounds/success.wav')
-musica_fondo = pygame.mixer.Sound('sounds/guimo.wav')
+musica_perder = pygame.mixer.Sound('./res/sounds/boom.wav')
+musica_agua = pygame.mixer.Sound('./res/sounds/agua.wav')
+musica_exito = pygame.mixer.Sound('./res/sounds/success.wav')
+musica_fondo = pygame.mixer.Sound('./res/sounds/guimo.wav')
 
 pygame.display.set_caption('Frogger')
 clock = pygame.time.Clock()

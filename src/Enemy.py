@@ -1,4 +1,4 @@
-from Resources.Object import Object
+from src.Object import Object
 
 # Los objetos que hacen perder a la rana
 class Enemy(Object):

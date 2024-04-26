@@ -1,7 +1,7 @@
 import pygame
 from pygame.locals import *
-from Global import Global as glb
-from Resources.Object import Object
+from src.Global import Global as glb
+from src.Object import Object
 
 # Personaje principal
 class Frog(Object):
@@ -20,19 +20,19 @@ class Frog(Object):
             self.way = key_pressed
             # Si la dirección es hacia arriba
             if self.way == "up":
-                moves_directorio = './images/sprite_sheets_up.png'
+                moves_directorio = './res/img/sprite_sheets_up.png'
                 self.sprite = pygame.image.load(moves_directorio).convert_alpha()
             # Si la dirección es hacia abajo
             elif self.way == "down":
-                moves_directorio = './images/sprite_sheets_down.png'
+                moves_directorio = './res/img/sprite_sheets_down.png'
                 self.sprite = pygame.image.load(moves_directorio).convert_alpha()
             # Si la dirección es hacia la izquierda
             elif self.way == "left":
-                moves_directorio = './images/sprite_sheets_left.png'
+                moves_directorio = './res/img/sprite_sheets_left.png'
                 self.sprite = pygame.image.load(moves_directorio).convert_alpha()
             # Si la dirección es hacia la derecha
             elif self.way == "right":
-                moves_directorio = './images/sprite_sheets_right.png'
+                moves_directorio = './res/img/sprite_sheets_right.png'
                 self.sprite = pygame.image.load(moves_directorio).convert_alpha()
 
     # Movimientos del personaje

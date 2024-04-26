@@ -1,4 +1,4 @@
-from Resources.Object import Object
+from src.Object import Object
 
 # Plataformas moviles en las partes de agua, permiten que la rana cruce
 class Plataform(Object):
