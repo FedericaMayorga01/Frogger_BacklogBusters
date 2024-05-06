@@ -8,6 +8,8 @@ import pygame
 from pygame.locals import *
 from sys import exit
 
+from src.Potenciador import Potenciador
+
 # --- INICIALIZACION ------------------------------------------
 pygame.init()
 pygame.font.init()
@@ -35,6 +37,7 @@ tronco_directorio = './res/img/tronco.png'
 # Convierte las imagenes en objetos dinamicos
 fondo = pygame.image.load(fondo_directorio).convert()
 animacion = pygame.image.load(moves_directorio).convert_alpha()
+potenciador_imagen = pygame.image.load(tronco_directorio).convert_alpha()
 rana = pygame.image.load(rana_directorio).convert_alpha()
 auto1 = pygame.image.load(auto1_directorio).convert_alpha()
 auto2 = pygame.image.load(auto2_directorio).convert_alpha()
@@ -160,7 +163,7 @@ def createPlataform(list,plataforms,game):
 
 
 # Comprueba si la rana chocó con algun enemigo
-def rana_calle(frog,enemys,game):
+def rana_calle(frog,enemys,potenciador,game):
     # Compara las areas con el metodo rect del los objetos y la rana
     for i in enemys:
         enemyRect = i.rect()
@@ -168,6 +171,10 @@ def rana_calle(frog,enemys,game):
         if frogRect.colliderect(enemyRect):
             musica_perder.play()
             frog.frogDead(game)
+
+    if potenciador.visible and potenciador.get_rect().colliderect(frog.rect()):
+        potenciador.hide()
+        game.start_bonus(300)  # Start the bonus for 300 game ticks
 
 # Confirma si la rana está sobre alguna plataforma cuando está en el lago
 def rana_lago(frog,plataforms,game):
@@ -229,7 +236,7 @@ def frogArrived(frog,llegadas,game):
 def ubicacion_rana(frog):
     # Si esta en la carretera
     if frog.position[1] > 240 :
-        rana_calle(frog,enemys,game)
+        rana_calle(frog,enemys,potenciador,game)
 
     # Si llega al rio
     elif frog.position[1] < 240 and frog.position[1] > 40:
@@ -289,6 +296,7 @@ while True:
     key_up = 1
     frog_initial_position = [207, 475]
     frog = Frog(frog_initial_position, animacion)
+    potenciador = Potenciador([207, 405], potenciador_imagen)
     # Listas de enemigos, plataformas y llegadas en el juego
     enemys = []
     plataforms = []
@@ -305,6 +313,7 @@ while True:
     # Ciclo principal de juego
     while frog.vidas > 0:
         # Eventos del juego
+        potenciador.draw()
         for event in pygame.event.get():
             if event.type == QUIT:
                 # Si se cierra la ventana terminar juego
