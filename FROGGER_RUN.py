@@ -2,13 +2,13 @@ from src.Object import Object
 from src.Frog import Frog
 from src.Enemy import Enemy
 from src.Plataform import Plataform
+from src.Potenciador import Potenciador
 from src.Game import Game
 from src.Global import Global
 import pygame
 from pygame.locals import *
 from sys import exit
 
-from src.Potenciador import Potenciador
 
 # --- INICIALIZACION ------------------------------------------
 pygame.init()
@@ -26,6 +26,7 @@ menu_font = pygame.font.SysFont(font_name, 36)
 # Carga los nombres de las imagenes a usar:
 fondo_directorio = './res/img/bg.png'
 moves_directorio = './res/img/sprite_sheets_up.png'
+potenciador_directorio = './res/img/potenciador.png'
 rana_directorio = './res/img/frog_arrived.png'
 auto1_directorio = './res/img/car1.png'
 auto2_directorio = './res/img/car2.png'
@@ -37,7 +38,7 @@ tronco_directorio = './res/img/tronco.png'
 # Convierte las imagenes en objetos dinamicos
 fondo = pygame.image.load(fondo_directorio).convert()
 animacion = pygame.image.load(moves_directorio).convert_alpha()
-potenciador_imagen = pygame.image.load(tronco_directorio).convert_alpha()
+potenciador_sprite = pygame.image.load(potenciador_directorio).convert_alpha()
 rana = pygame.image.load(rana_directorio).convert_alpha()
 auto1 = pygame.image.load(auto1_directorio).convert_alpha()
 auto2 = pygame.image.load(auto2_directorio).convert_alpha()
@@ -93,35 +94,35 @@ def createEnemys(list,enemys,game):
             # Si el contador llega a cero, crea un nuevo enemigo y reinicia el contador.
             if i == 0:  
                 #Enemigo tipo 1
-                list[0] = (40*game.speed)/game.level
+                list[0] = (40*game.speed)/game.level  * (2.5 if game.speed < 3 else 1)
                 position_init = [-55,436]
                 enemy = Enemy(position_init,auto1,"right",1)
                 enemys.append(enemy)
 
             # Configuración del segundo tipo de enemigo.
             elif i == 1: 
-                list[1] = (30*game.speed)/game.level
+                list[1] = (30*game.speed)/game.level * (2.5 if game.speed < 3 else 1)
                 position_init = [506, 397]
                 enemy = Enemy(position_init,auto2,"left",2)
                 enemys.append(enemy)
 
             # Configuración del tercer tipo de enemigo.
             elif i == 2:   
-                list[2] = (40*game.speed)/game.level
+                list[2] = (40*game.speed)/game.level * (2.5 if game.speed < 3 else 1)
                 position_init = [-80, 357]
                 enemy = Enemy(position_init,auto3,"right",2)
                 enemys.append(enemy)
 
             # Configuración del cuarto tipo de enemigo.
             elif i == 3: 
-                list[3] = (30*game.speed)/game.level
+                list[3] = (30*game.speed)/game.level * (2.5 if game.speed < 3 else 1)
                 position_init = [516, 318]
                 enemy = Enemy(position_init,auto4,"left",1)
                 enemys.append(enemy)
             
             # Configuración del quinto tipo de enemigo.
             elif i == 4:  
-                list[4] = (50*game.speed)/game.level
+                list[4] = (50*game.speed)/game.level * (2.5 if game.speed < 3 else 1)
                 position_init = [-56, 280]
                 enemy = Enemy(position_init,auto5,"right",1)
                 enemys.append(enemy)
@@ -132,31 +133,31 @@ def createPlataform(list,plataforms,game):
         list[i] = list[i] - 1
         if tick <= 0:
             if i == 0:
-                list[0] = (30*game.speed)/game.level
+                list[0] = (30*game.speed)/game.level * (2.5 if game.speed < 3 else 1)
                 position_init = [-100,200]
                 plataform = Plataform(position_init,tronco,"right")
                 plataforms.append(plataform)
 
             elif i == 1:
-                list[1] = (30*game.speed)/game.level
+                list[1] = (30*game.speed)/game.level * (2.5 if game.speed < 3 else 1)
                 position_init = [448, 161]
                 plataform = Plataform(position_init,tronco,"left")
                 plataforms.append(plataform)
 
             elif i == 2:
-                list[2] = (40*game.speed)/game.level
+                list[2] = (40*game.speed)/game.level * (2.5 if game.speed < 3 else 1)
                 position_init = [-100, 122]
                 plataform = Plataform(position_init,tronco,"right")
                 plataforms.append(plataform)
 
             elif i == 3:
-                list[3] = (40*game.speed)/game.level
+                list[3] = (40*game.speed)/game.level * (2.5 if game.speed < 3 else 1)
                 position_init = [448, 83]
                 plataform = Plataform(position_init,tronco,"left")
                 plataforms.append(plataform)
 
             elif i == 4:
-                list[4] = (20*game.speed)/game.level
+                list[4] = (20*game.speed)/game.level * (2.5 if game.speed < 3 else 1)
                 position_init = [-100, 44]
                 plataform = Plataform(position_init,tronco,"right")
                 plataforms.append(plataform)
@@ -171,10 +172,6 @@ def rana_calle(frog,enemys,potenciador,game):
         if frogRect.colliderect(enemyRect):
             musica_perder.play()
             frog.frogDead(game)
-
-    if potenciador.visible and potenciador.get_rect().colliderect(frog.rect()):
-        potenciador.hide()
-        game.start_bonus(300)  # Start the bonus for 300 game ticks
 
 # Confirma si la rana está sobre alguna plataforma cuando está en el lago
 def rana_lago(frog,plataforms,game):
@@ -290,13 +287,23 @@ while gameInit == 0:
 
 # Luego de presionar alguna tecla
 while True:
+    # ---------------------------------------------------------
+    # Create a potenciador
+    potenciador = Potenciador(potenciador_sprite)
+
+    # Add a timer for the potenciador
+    potenciador_timer = 0
+
+    # Add a timer for the speed boost
+    speed_boost_timer = 0
+    # ---------------------------------------------------------
+
     gameInit = 1
     # Velocidad y nivel inicial
     game = Game(3, 1)
     key_up = 1
     frog_initial_position = [207, 475]
     frog = Frog(frog_initial_position, animacion)
-    potenciador = Potenciador([207, 405], potenciador_imagen)
     # Listas de enemigos, plataformas y llegadas en el juego
     enemys = []
     plataforms = []
@@ -313,7 +320,6 @@ while True:
     # Ciclo principal de juego
     while frog.vidas > 0:
         # Eventos del juego
-        potenciador.draw()
         for event in pygame.event.get():
             if event.type == QUIT:
                 # Si se cierra la ventana terminar juego
@@ -342,6 +348,31 @@ while True:
         createEnemys(ticks_enemys, enemys, game)
         createPlataform(ticks_plataforms, plataforms, game)
 
+        # ---------------------------------------------------------
+        # Every 500 ticks, reset the potenciador's position
+        if potenciador_timer >= 500 and not game.potenciador_active:
+            potenciador.reset_position()
+            potenciador_timer = 0
+        else:
+            potenciador_timer += 1
+
+        # If the frog collides with the potenciador, reduce the game speed for 200 ticks
+        if frog.rect().colliderect(potenciador.rect()):
+            game.speed /= 2
+            speed_boost_timer = 200
+            game.potenciador_active = True
+            potenciador.disappear()
+            ticks_enemys = [x * 2.5 for x in ticks_enemys]
+            ticks_plataforms = [x * 2.5 for x in ticks_plataforms]
+
+        # If the speed boost timer is active, decrement it
+        if speed_boost_timer > 0:
+            speed_boost_timer -= 1
+        elif speed_boost_timer == 0 and game.speed < 3:  # Reset the game speed when the timer runs out
+            game.speed *= 2
+            game.potenciador_active = False
+        # ---------------------------------------------------------
+
         # Mueve los elementos extra
         moveList(enemys, game.speed)
         moveList(plataforms, game.speed)
@@ -366,6 +397,7 @@ while True:
         # Movimientos y animaciones de la rana
         frog.animateFrog(key_pressed,key_up)
         frog.draw()
+        potenciador.draw()
 
         # Destruye los elementos extra que salen de pantalla
         destroyEnemys(enemys)

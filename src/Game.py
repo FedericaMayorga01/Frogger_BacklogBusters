@@ -7,6 +7,7 @@ class Game():
         self.points = 0
         self.time = 30
         self.gameInit = 0
+        self.potenciador_active = False
 
     # Incrementa el nivel
     def incLevel(self):

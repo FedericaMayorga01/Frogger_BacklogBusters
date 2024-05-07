@@ -1,21 +1,19 @@
-import pygame
-from src.Global import Global  # Import the global screen variable
+from src.Object import Object
+import random
+from src.Global import Global as glb
 
-class Potenciador:
-    def __init__(self, position, animation):
-        self.position = position
-        self.animation = animation
-        self.visible = True
+class Potenciador(Object):
+    def __init__(self, sprite):
+        self.sprite = sprite
+        # Initialize the potenciador at a random position
+        #position = [random.randint(0, 420), random.randint(280, 445)]
+        position = [0, 445]
+        super().__init__(position, sprite)
 
-    def show(self):
-        self.visible = True
+    def reset_position(self):
+        # Reset the position to a new random position
+        self.position = [random.randint(0, 420), random.randint(280, 445)]
 
-    def hide(self):
-        self.visible = False
-
-    def get_rect(self):
-        return pygame.Rect(self.position[0], self.position[1], self.animation.get_width(), self.animation.get_height())
-
-    def draw(self):
-        if self.visible:
-            Global.screen.blit(self.animation, self.position)
+    def disappear(self):
+        # Set the position to an off-screen location
+        self.position = [-100, -100]
