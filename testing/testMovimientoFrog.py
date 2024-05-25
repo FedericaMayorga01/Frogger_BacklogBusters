@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import Mock, patch
-from src.Frog import Frog
+from "D:\Felipe\Universidad\Ingenieria del Software\Frogger_BacklogBusters\src\Frog"
 
 class testFrog(unittest.TestCase):
 
@@ -11,6 +11,8 @@ class testFrog(unittest.TestCase):
     @patch('src.Frog.pygame')
     # Vamos a utilizar el decorador patch para simular el modulo pygame con un objeto Mock
     # El objeto Mock se pasa como argumento a la funcion test_mover_rana
+
+    
     def test_mover_rana(self, mock_pygame):
         # Test rana se mueve para arriba
         self.frog.mover_rana('up', 1)
@@ -31,3 +33,9 @@ class testFrog(unittest.TestCase):
         self.frog.mover_rana('right', 1)
         self.assertEqual(self.frog.position, [207, 475])
         print("Prueba para mover la rana hacia la derecha aprobada")
+
+
+
+
+
+    
