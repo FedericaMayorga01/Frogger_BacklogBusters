@@ -1,0 +1,28 @@
+import pygame
+import pytest
+from src import Game
+from src import Frog
+
+
+
+
+
+
+def test_cambio_color():
+
+    moves_directorio = './res/img/sprite_sheets_up.png'
+    animacion = pygame.image.load(moves_directorio).convert_alpha()
+
+
+
+
+    game = Game(3,1)
+    frog = Frog( [207,475] , animacion)
+
+
+    self.Frog.cambiarColor()
+
+    Frog.cambiarAnimacion == roka
+
+    assert moves_directorio 
+

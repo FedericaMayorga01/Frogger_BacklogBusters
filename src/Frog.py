@@ -19,8 +19,9 @@ class Frog(Object):
         if self.way != key_pressed:
             self.way = key_pressed
             # Si la dirección es hacia arriba
+    
             if self.way == "up":
-                moves_directorio = './res/img/sprite_sheets_up.png'
+                moves_directorio = './res/img/sprite_sheets_up.png' 
                 self.sprite = pygame.image.load(moves_directorio).convert_alpha()
             # Si la dirección es hacia abajo
             elif self.way == "down":
