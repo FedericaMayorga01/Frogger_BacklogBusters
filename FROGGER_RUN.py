@@ -76,7 +76,7 @@ while gameInit == 0:
 while True:
     gameInit = 1
     # Velocidad y nivel inicial
-    game = Game(10, 8)
+    game = Game(3, 1)
     key_up = 1
     frog_initial_position = [207, 475]
     frog = Frog(frog_initial_position, animacion)
@@ -129,9 +129,6 @@ while True:
         # Resetea la posición del potenciador
         function.resetPotenciador(potenciador, game)
 
-        # Si la rana colisiona con el potenciador
-        function.potenciadorCollision(frog, potenciador, game, ticks_enemys, ticks_plataforms)
-
         # Si el potenciador está activo, disminuye el tiempo restante
         function.potenciadorActive(potenciador, game)
         # ---------------------------------------------------------
@@ -144,7 +141,7 @@ while True:
         function.moveList(enemys, game.speed)
         function.moveList(plataforms, game.speed)
 
-        function.ubicacion_rana(frog, enemys, plataforms, llegadas, game, musica_perder, musica_agua, musica_exito, rana)
+        function.ubicacion_rana(frog, enemys, plataforms, llegadas, game, musica_perder, musica_agua, musica_exito, rana, potenciador, ticks_enemys, ticks_plataforms)
 
         function.nextLevel(llegadas, frog, game)
 

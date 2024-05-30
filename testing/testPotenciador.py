@@ -2,49 +2,73 @@ import unittest
 from unittest.mock import Mock
 
 import pygame
+
+from FroggerGameLogic import FroggerGameLogic
 from src.Frog import Frog
 from src.Game import Game
 from src.Potenciador import Potenciador
 
 class TestPotenciador(unittest.TestCase):
     def setUp(self):
-        self.position_inic=[207, 475]
-        self.frog = Frog(self.position_inic, Mock())
-        self.game = Game(3, 1)
-        self.potenciador = Potenciador(Mock())
+        self.position=[100,400]
+        mock_animation = pygame.Surface((120,30))
+        self.frog = Frog(self.position, mock_animation)
+        self.game = Mock()
+        mock_sprite = pygame.Surface((20,20))
+        self.potenciador = Potenciador(mock_sprite)
+        self.function = FroggerGameLogic()
 
     def test_collision(self):
         """DADO que se esta en una partida activa CUANDO la posicion de la rana
         es la misma que la del potenciador ENTONCES ambos colisionan"""
-        self.frog.position = [100, 100]
-        self.potenciador.position = [100, 100]
+        self.potenciador.position = self.position
+        enemys = []
+        ticks_enemys = []
+        ticks_plataforms = []
 
-        self.assertTrue(self.frog.rect().colliderect(self.potenciador.rect()))
+        self.function.ubicacion_rana( self.frog, enemys, Mock(), Mock(), self.game, Mock(), Mock(), Mock(),
+                                     Mock(), self.potenciador, ticks_enemys, ticks_plataforms)
 
-
-    def test_reset_position(self):
-        """DADO que se esta en una partida activa CUANDO pasa cierto tiempo y
-        el jugador no agarra el potenciador ENTONCES el potenciador desaparece"""
-        initial_position = self.potenciador.position
-        self.potenciador.reset_position()
-        self.assertNotEqual(self.potenciador.position, initial_position)
+        self.game.scale_speed.assert_called_once()
 
     def test_disappear(self):
         """DADO que se esta en una partida activa CUANDO el jugador agarra
         un potenciador ENTONCES el potenciador desaparece"""
-        self.potenciador.disappear()
+        self.potenciador.position = self.position
+        enemys = []
+        ticks_enemys = []
+        ticks_plataforms = []
+
+        self.function.ubicacion_rana(self.frog, enemys, Mock(), Mock(), self.game, Mock(), Mock(), Mock(),
+                                     Mock(), self.potenciador, ticks_enemys, ticks_plataforms)
+
         self.assertEqual(self.potenciador.position, [-100, -100])
 
     def test_speed_reducida(self):
         """DADO que se esta en una partida activa CUANDO el jugador agarra
         un potenciador ENTONCES la velocidad del juego disminuye"""
         # Set the frog and potenciador to the same position to cause a collision
-        self.frog.position = [100, 100]
-        self.potenciador.position = [100, 100]
+        self.potenciador.position = self.position
+        initial_speed=3
+        game = Game(initial_speed, 1)
+        enemys = []
+        ticks_enemys = []
+        ticks_plataforms = []
 
-        initial_speed = self.game.speed
-        # Simulate the effect of the collision
-        if self.frog.rect().colliderect(self.potenciador.rect()):
-            self.game.speed /= 2
+        self.function.ubicacion_rana(self.frog, enemys, Mock(), Mock(), game, Mock(), Mock(), Mock(),
+                                     Mock(), self.potenciador, ticks_enemys, ticks_plataforms)
 
-        self.assertEqual(self.game.speed, initial_speed / 2)
+        self.assertEqual(game.speed, initial_speed/2)
+
+    def test_reset_position(self):
+        """DADO que se esta en una partida activa CUANDO pasa cierto tiempo y
+        el jugador no agarra el potenciador ENTONCES el potenciador cambia de posicion"""
+        position_inic = self.potenciador.position
+
+        #Forzamos que el potenciador no este activo
+        self.game.potenciador_active = False
+
+        self.potenciador.timer = 500
+        self.function.resetPotenciador(self.potenciador, self.game)
+
+        self.assertNotEqual(self.potenciador.position, position_inic)

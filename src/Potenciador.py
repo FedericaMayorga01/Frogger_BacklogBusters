@@ -10,12 +10,12 @@ class Potenciador(Object):
         # Cuanto tiempo va a estar activo el potenciador
         self.active_timer = 0
         # Initialize the potenciador at a random position
-        position = [random.randint(0, 420), random.randint(280, 445)]
+        position = [random.randint(0, 420), random.randint(240, 445)]
         super().__init__(position, sprite)
 
     def reset_position(self):
         # Reset the position to a new random position
-        self.position = [random.randint(0, 420), random.randint(280, 445)]
+        self.position = [random.randint(0, 420), random.randint(240, 445)]
 
     def disappear(self):
         # Set the position to an off-screen location

@@ -111,11 +111,25 @@ class FroggerGameLogic:
                     plataforms.append(plataform)
 
     # Comprueba si la rana chocó con algun enemigo
-    def rana_calle(self, frog, enemys, game, musica_perder):
+    def rana_calle(self, frog, enemys, game, musica_perder, potenciador, ticks_enemys, ticks_plataforms):
         # Compara las areas con el metodo rect del los objetos y la rana
+        frogRect = frog.rect()
+        potRect = potenciador.rect()
+
+        # Si la rana colisiona con el potenciador
+        if frogRect.colliderect(potRect):
+            game.scale_speed(0.5)
+            potenciador.active_timer = 200
+            game.potenciador_active = True
+            potenciador.disappear()
+            for i in range(len(ticks_enemys)):
+                ticks_enemys[i] *= 2.5
+            for i in range(len(ticks_plataforms)):
+                ticks_plataforms[i] *= 2.5
+
+        # Si la rana colisiona con un enemigo
         for i in enemys:
             enemyRect = i.rect()
-            frogRect = frog.rect()
             if frogRect.colliderect(enemyRect):
                 musica_perder.play()
                 frog.frogDead(game)
@@ -150,10 +164,10 @@ class FroggerGameLogic:
 
 
     # Da la ubicacion de la rana y llama a las funciones correspondientes
-    def ubicacion_rana(self, frog, enemys, plataforms, llegadas, game, musica_perder, musica_agua, musica_exito, rana):
+    def ubicacion_rana(self, frog, enemys, plataforms, llegadas, game, musica_perder, musica_agua, musica_exito, rana, potenciador, ticks_enemys, ticks_plataforms):
         # Si esta en la carretera
         if frog.position[1] > 240:
-            self.rana_calle(frog, enemys, game, musica_perder)
+            self.rana_calle(frog, enemys, game, musica_perder, potenciador, ticks_enemys, ticks_plataforms)
 
         # Si llega al rio
         elif frog.position[1] < 240 and frog.position[1] > 40:
@@ -222,18 +236,6 @@ class FroggerGameLogic:
             potenciador.timer = 0
         else:
             potenciador.timer += 1
-
-    # Si la rana colisiona con el potenciador
-    def potenciadorCollision(self, frog, potenciador, game, ticks_enemys, ticks_plataforms):
-        if frog.rect().colliderect(potenciador.rect()):
-            game.scale_speed(0.5)
-            potenciador.active_timer += 200
-            game.potenciador_active = True
-            potenciador.disappear()
-            for i in range(len(ticks_enemys)):
-                ticks_enemys[i] *= 2.5
-            for i in range(len(ticks_plataforms)):
-                ticks_plataforms[i] *= 2.5
 
     # Si el potenciador está activo, disminuye el tiempo restante
     def potenciadorActive(self, potenciador, game):
