@@ -6,6 +6,8 @@ on:
     - cron: '0 0 * * *'
   # Cada vez que se hace un push a cualquier branch
   push:
+    branches:
+      - featurePotenciador
 
   # Cada vez que se hace un pull request que involucre las branches
   pull_request:
@@ -33,4 +35,4 @@ jobs:
 
     - name: Run tests
       run: |
-        pytest
+        pytest testing/
