@@ -242,6 +242,6 @@ class FroggerGameLogic:
         if potenciador.active_timer > 0:
             potenciador.active_timer -= 1
         elif potenciador.active_timer == 0 and game.potenciador_active:  # Reseteamos la velocidad cuando el potenciador se termina
-            game.scale_speed(2)
+            game.reset_speed()
             game.potenciador_active = False
     # ---------------------------------------------------------

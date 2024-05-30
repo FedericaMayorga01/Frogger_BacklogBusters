@@ -2,7 +2,7 @@
 class Game():
     def __init__(self,speed,level):
         self.speed = speed
-        self.original_speed = speed
+        self.base_speed = speed
         self.level = level
         self.points = 0
         self.time = 30
@@ -16,6 +16,7 @@ class Game():
     # Incrementa la velocidad
     def incSpeed(self):
         self.speed = self.speed + 1
+        self.base_speed = self.speed + 1
 
     # Incrementa los puntos
     def incPoints(self,points):
@@ -31,3 +32,6 @@ class Game():
 
     def scale_speed(self,prescaler):
         self.speed *= prescaler
+
+    def reset_speed(self):
+        self.speed = self.base_speed

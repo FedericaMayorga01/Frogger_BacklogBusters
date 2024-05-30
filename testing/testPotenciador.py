@@ -10,18 +10,17 @@ from src.Potenciador import Potenciador
 
 class TestPotenciador(unittest.TestCase):
     def setUp(self):
-        self.position=[100,400]
         mock_animation = pygame.Surface((120,30))
-        self.frog = Frog(self.position, mock_animation)
+        self.frog = Frog([100,400], mock_animation)
         self.game = Mock()
         mock_sprite = pygame.Surface((20,20))
         self.potenciador = Potenciador(mock_sprite)
+        self.potenciador.position = [100,400]
         self.function = FroggerGameLogic()
 
     def test_collision(self):
         """DADO que se esta en una partida activa CUANDO la posicion de la rana
         es la misma que la del potenciador ENTONCES ambos colisionan"""
-        self.potenciador.position = self.position
         enemys = []
         ticks_enemys = []
         ticks_plataforms = []
@@ -34,7 +33,6 @@ class TestPotenciador(unittest.TestCase):
     def test_disappear(self):
         """DADO que se esta en una partida activa CUANDO el jugador agarra
         un potenciador ENTONCES el potenciador desaparece"""
-        self.potenciador.position = self.position
         enemys = []
         ticks_enemys = []
         ticks_plataforms = []
@@ -48,7 +46,6 @@ class TestPotenciador(unittest.TestCase):
         """DADO que se esta en una partida activa CUANDO el jugador agarra
         un potenciador ENTONCES la velocidad del juego disminuye"""
         # Set the frog and potenciador to the same position to cause a collision
-        self.potenciador.position = self.position
         initial_speed=3
         game = Game(initial_speed, 1)
         enemys = []
@@ -72,3 +69,25 @@ class TestPotenciador(unittest.TestCase):
         self.function.resetPotenciador(self.potenciador, self.game)
 
         self.assertNotEqual(self.potenciador.position, position_inic)
+
+    def test_end_boost_false(self):
+        """DADO que el jugador agarra un potenciador CUANDO todavia no ha pasado el tiempo
+        de accion completo ENTONCES el potenciador sigue activo"""
+        self.game.potenciador_active = True
+        self.potenciador.active_timer = 10
+
+        self.function.potenciadorActive(self.potenciador, self.game)
+
+        # Al no haber terminado no tiene que haber cambiado la velocidad
+        self.game.reset_speed.assert_not_called()
+
+    def test_end_boost_positive(self):
+        """DADO que el jugador agarra un potenciador CUANDO pasa el tiempo de accion completo
+        ENTONCES el potenciador termina de hacer efecto"""
+        self.game.potenciador_active = True
+        self.potenciador.active_timer = 0
+
+        self.function.potenciadorActive(self.potenciador, self.game)
+
+        # Al haber terminado tiene que haber reseteado la velocidad
+        self.game.reset_speed.assert_called_once()
