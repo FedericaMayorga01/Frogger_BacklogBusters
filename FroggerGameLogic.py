@@ -213,3 +213,12 @@ class FroggerGameLogic:
             frog.animation_counter = 0
             frog.animation_tick = 1
             frog.can_move = 1
+
+    # Va rotando la música de fondo
+    def tiempoMusica(self, game, musica1, musica2, ticks_time_musica):
+        if not game.timeMusic:
+            game.setTimeMusic(ticks_time_musica)
+            musica1.stop()
+            musica2.play(-1)
+        else:
+            game.decTimeMusic()

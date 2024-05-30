@@ -45,13 +45,14 @@ tronco = pygame.image.load(tronco_directorio).convert_alpha()
 musica_perder = pygame.mixer.Sound('./res/sounds/boom.wav')
 musica_agua = pygame.mixer.Sound('./res/sounds/agua.wav')
 musica_exito = pygame.mixer.Sound('./res/sounds/success.wav')
-musica_fondo = pygame.mixer.Sound('./res/sounds/guimo.wav')
+musica_fondo1 = pygame.mixer.Sound('./res/sounds/guimo.wav')
+musica_fondo2 = pygame.mixer.Sound('./res/sounds/guimo2.wav')
 
 pygame.display.set_caption('Frogger')
 clock = pygame.time.Clock()
 
 #--- INICIALIZA EL JUEGO -------------------------------------
-musica_fondo.play(-1)
+musica_fondo1.play(-1)
 text_info = menu_font.render(('Presiona cualquier tecla para iniciar!'), 1, (0, 0, 0))
 gameInit = 0
 function = FroggerGameLogic()
@@ -83,10 +84,12 @@ while True:
     llegadas = []
     # 30 ticks == 1 segundo
     # Frecuencia de los enemigos
-    ticks_enemys = [30, 0, 30, 0, 60] 
+    ticks_enemys = [30, 0, 30, 0, 60]
     # Frecuencia de las plataformas
-    ticks_plataforms = [0, 0, 30, 30, 30] 
+    ticks_plataforms = [0, 0, 30, 30, 30]
     ticks_time = 30
+    ticks_time_musica = 1800
+    game.setTimeMusic(ticks_time_musica)
     pressed_keys = 0
     key_pressed = 0
 
@@ -96,13 +99,13 @@ while True:
         for event in pygame.event.get():
             if event.type == QUIT:
                 # Si se cierra la ventana terminar juego
-                exit() 
+                exit()
             if event.type == KEYUP:
                 # Si se deja de presionar una tecla
-                key_up = 1 
-            if event.type == KEYDOWN: 
+                key_up = 1
+            if event.type == KEYDOWN:
                 #Si se presiona una tecla
-                if key_up == 1 and frog.can_move == 1 : 
+                if key_up == 1 and frog.can_move == 1 :
                     key_pressed = pygame.key.name(event.key)
                     frog.mover_rana(key_pressed, key_up)
                     frog.cannotMove()
@@ -117,7 +120,10 @@ while True:
         if game.time == 0:
             frog.frogDead(game)
 
-        # Agrega elementos extra    
+        # Va rotando la música de fondo
+        function.tiempoMusica(game, musica_fondo1, musica_fondo2, ticks_time_musica)
+
+        # Agrega elementos extra
         function.createEnemys(ticks_enemys, enemys, game, auto1, auto2, auto3, auto4, auto5)
         function.createPlataform(ticks_plataforms, plataforms, game, tronco)
 

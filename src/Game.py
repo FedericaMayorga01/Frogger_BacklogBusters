@@ -6,6 +6,7 @@ class Game():
         self.points = 0
         self.time = 30
         self.gameInit = 0
+        self.timeMusic=1800
 
     # Incrementa el nivel
     def incLevel(self):
@@ -16,13 +17,19 @@ class Game():
         self.speed = self.speed + 1
 
     # Incrementa los puntos
-    def incPoints(self,points):
+    def incPoints(self, points):
         self.points = self.points + points
 
     # Decrementa el tiempo restante de juego
     def decTime(self):
-        self.time = self.time - 1
+        self.time=self.time-1
 
     # Restablece el tiempo
     def resetTime(self):
         self.time = 30
+
+    def setTimeMusic(self, timeMusic):
+        self.timeMusic = timeMusic
+
+    def decTimeMusic(self):
+        self.timeMusic -=1
