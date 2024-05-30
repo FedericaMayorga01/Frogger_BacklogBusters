@@ -14,9 +14,9 @@ class Potenciador(Object):
         super().__init__(position, sprite)
 
     def reset_position(self):
-        # Reset the position to a new random position
+        # Reseteamos la posicón del potenciador
         self.position = [random.randint(0, 420), random.randint(240, 445)]
 
     def disappear(self):
-        # Set the position to an off-screen location
+        # Hace desaparecer el potenciador
         self.position = [-100, -100]

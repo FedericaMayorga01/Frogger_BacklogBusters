@@ -1,6 +1,6 @@
 # Estado del juego
 class Game():
-    def __init__(self,speed,level):
+    def __init__(self, speed, level):
         self.speed = speed
         self.base_speed = speed
         self.level = level
@@ -35,3 +35,9 @@ class Game():
 
     def reset_speed(self):
         self.speed = self.base_speed
+
+    def activarPotenciador(self):
+        self.potenciador_active = True
+
+    def desactivarPotenciador(self):
+        self.potenciador_active = False

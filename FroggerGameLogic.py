@@ -120,7 +120,7 @@ class FroggerGameLogic:
         if frogRect.colliderect(potRect):
             game.scale_speed(0.5)
             potenciador.active_timer = 200
-            game.potenciador_active = True
+            game.activarPotenciador()
             potenciador.disappear()
             for i in range(len(ticks_enemys)):
                 ticks_enemys[i] *= 2.5
@@ -243,5 +243,5 @@ class FroggerGameLogic:
             potenciador.active_timer -= 1
         elif potenciador.active_timer == 0 and game.potenciador_active:  # Reseteamos la velocidad cuando el potenciador se termina
             game.reset_speed()
-            game.potenciador_active = False
+            game.desactivarPotenciador()
     # ---------------------------------------------------------
