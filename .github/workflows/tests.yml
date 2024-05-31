@@ -4,16 +4,13 @@ on:
   schedule:
     # Todos los dias a las 00:00
     - cron: '0 0 * * *'
-  # Cada vez que se hace un push a cualquier branch
+  # Cada vez que se hace un push a esta branch
   push:
     branches:
       - featurePotenciador
 
-  # Cada vez que se hace un pull request que involucre las branches
+  # Cada vez que se hace un pull request
   pull_request:
-    branches:
-      - main
-      - develop
 
 jobs:
   test:
