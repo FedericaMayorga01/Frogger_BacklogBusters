@@ -6,7 +6,8 @@ class Game():
         self.points = 0
         self.time = 30
         self.gameInit = 0
-        self.timeMusic=1800
+        self.timeMusic = 1800
+        self.currentMusic = 2
 
     # Incrementa el nivel
     def incLevel(self):
