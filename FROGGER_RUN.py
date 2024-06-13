@@ -96,6 +96,9 @@ while True:
     # ---------------------------------------------------------
     # Creamos un potenciador
     potenciador = Potenciador(potenciador_sprite)
+
+    # Agregamos a game como OBSERVER del potenciador
+    potenciador.add_observer(game)
     # ---------------------------------------------------------
 
     # Ciclo principal de juego
@@ -134,8 +137,8 @@ while True:
         # ---------------------------------------------------------
 
         # Agrega elementos extra
-        function.createEnemys(ticks_enemys, enemys, game, auto1, auto2, auto3, auto4, auto5)
-        function.createPlataform(ticks_plataforms, plataforms, game, tronco)
+        function.createEnemys(ticks_enemys, enemys, game, potenciador, auto1, auto2, auto3, auto4, auto5)
+        function.createPlataform(ticks_plataforms, plataforms, game, potenciador, tronco)
 
         # Mueve los elementos extra
         function.moveList(enemys, game.speed)
@@ -160,7 +163,7 @@ while True:
 
         # ---------------------------------------------------------
         # Dibuja el potenciador si no esta activo
-        if not game.potenciador_active:
+        if not potenciador.isActive:
             potenciador.draw()
         # ---------------------------------------------------------
 

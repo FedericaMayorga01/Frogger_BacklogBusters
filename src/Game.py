@@ -1,5 +1,9 @@
+from diseñoObserver.Observer import Observer
+from src.Potenciador import Potenciador
+
+
 # Estado del juego
-class Game():
+class Game(Observer):
     def __init__(self, speed, level):
         self.speed = speed
         self.base_speed = speed
@@ -7,7 +11,6 @@ class Game():
         self.points = 0
         self.time = 30
         self.gameInit = 0
-        self.potenciador_active = False
 
     # Incrementa el nivel
     def incLevel(self):
@@ -36,8 +39,10 @@ class Game():
     def reset_speed(self):
         self.speed = self.base_speed
 
-    def activarPotenciador(self):
-        self.potenciador_active = True
-
-    def desactivarPotenciador(self):
-        self.potenciador_active = False
+    def update(self, sujeto):
+        # Chequeamos que el Sujeto sea un Potenciador, porque podemos estar observando otros Sujetos
+        if isinstance(sujeto, Potenciador):
+            if sujeto.isActive:
+                self.scale_speed(0.5)
+            else:
+                self.reset_speed()

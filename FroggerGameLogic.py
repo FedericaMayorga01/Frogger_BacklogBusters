@@ -34,7 +34,7 @@ class FroggerGameLogic:
                 list.remove(i)
 
     # Inicializa el enemigo
-    def createEnemys(self,list, enemys, game, auto1, auto2, auto3, auto4, auto5):
+    def createEnemys(self,list, enemys, game, potenciador, auto1, auto2, auto3, auto4, auto5):
         # list = contaodres para controlar el tiempo entre la creacion de enemigos
         for i, tick in enumerate(list):
             list[i] = list[i] - 1
@@ -42,70 +42,70 @@ class FroggerGameLogic:
                 # Si el contador llega a cero, crea un nuevo enemigo y reinicia el contador.
                 if i == 0:
                     # Enemigo tipo 1
-                    list[0] = (40 * game.speed) / game.level * (2.5 if game.potenciador_active else 1)
+                    list[0] = (40 * game.speed) / game.level * (2.5 if potenciador.isActive else 1)
                     position_init = [-55, 436]
                     enemy = Enemy(position_init, auto1, "right", 1)
                     enemys.append(enemy)
 
                 # Configuración del segundo tipo de enemigo.
                 elif i == 1:
-                    list[1] = (30 * game.speed) / game.level * (2.5 if game.potenciador_active else 1)
+                    list[1] = (30 * game.speed) / game.level * (2.5 if potenciador.isActive else 1)
                     position_init = [506, 397]
                     enemy = Enemy(position_init, auto2, "left", 2)
                     enemys.append(enemy)
 
                 # Configuración del tercer tipo de enemigo.
                 elif i == 2:
-                    list[2] = (40 * game.speed) / game.level * (2.5 if game.potenciador_active else 1)
+                    list[2] = (40 * game.speed) / game.level * (2.5 if potenciador.isActive else 1)
                     position_init = [-80, 357]
                     enemy = Enemy(position_init, auto3, "right", 2)
                     enemys.append(enemy)
 
                 # Configuración del cuarto tipo de enemigo.
                 elif i == 3:
-                    list[3] = (30 * game.speed) / game.level * (2.5 if game.potenciador_active else 1)
+                    list[3] = (30 * game.speed) / game.level * (2.5 if potenciador.isActive else 1)
                     position_init = [516, 318]
                     enemy = Enemy(position_init, auto4, "left", 1)
                     enemys.append(enemy)
 
                 # Configuración del quinto tipo de enemigo.
                 elif i == 4:
-                    list[4] = (50 * game.speed) / game.level * (2.5 if game.potenciador_active else 1)
+                    list[4] = (50 * game.speed) / game.level * (2.5 if potenciador.isActive else 1)
                     position_init = [-56, 280]
                     enemy = Enemy(position_init, auto5, "right", 1)
                     enemys.append(enemy)
 
     # Agrega plataformas para saltar
-    def createPlataform(self, list, plataforms, game, tronco):
+    def createPlataform(self, list, plataforms, game, potenciador, tronco):
         for i, tick in enumerate(list):
             list[i] = list[i] - 1
             if tick <= 0:
                 if i == 0:
-                    list[0] = (30 * game.speed) / game.level * (2.5 if game.potenciador_active else 1)
+                    list[0] = (30 * game.speed) / game.level * (2.5 if potenciador.isActive else 1)
                     position_init = [-100, 200]
                     plataform = Plataform(position_init, tronco, "right")
                     plataforms.append(plataform)
 
                 elif i == 1:
-                    list[1] = (30 * game.speed) / game.level * (2.5 if game.potenciador_active else 1)
+                    list[1] = (30 * game.speed) / game.level * (2.5 if potenciador.isActive else 1)
                     position_init = [448, 161]
                     plataform = Plataform(position_init, tronco, "left")
                     plataforms.append(plataform)
 
                 elif i == 2:
-                    list[2] = (40 * game.speed) / game.level * (2.5 if game.potenciador_active else 1)
+                    list[2] = (40 * game.speed) / game.level * (2.5 if potenciador.isActive else 1)
                     position_init = [-100, 122]
                     plataform = Plataform(position_init, tronco, "right")
                     plataforms.append(plataform)
 
                 elif i == 3:
-                    list[3] = (40 * game.speed) / game.level * (2.5 if game.potenciador_active else 1)
+                    list[3] = (40 * game.speed) / game.level * (2.5 if potenciador.isActive else 1)
                     position_init = [448, 83]
                     plataform = Plataform(position_init, tronco, "left")
                     plataforms.append(plataform)
 
                 elif i == 4:
-                    list[4] = (20 * game.speed) / game.level * (2.5 if game.potenciador_active else 1)
+                    list[4] = (20 * game.speed) / game.level * (2.5 if potenciador.isActive else 1)
                     position_init = [-100, 44]
                     plataform = Plataform(position_init, tronco, "right")
                     plataforms.append(plataform)
@@ -118,10 +118,7 @@ class FroggerGameLogic:
 
         # Si la rana colisiona con el potenciador
         if frogRect.colliderect(potRect):
-            game.scale_speed(0.5)
-            potenciador.active_timer = 200
-            game.activarPotenciador()
-            potenciador.disappear()
+            potenciador.activar()
             for i in range(len(ticks_enemys)):
                 ticks_enemys[i] *= 2.5
             for i in range(len(ticks_plataforms)):
@@ -231,7 +228,7 @@ class FroggerGameLogic:
     # ---------------------------------------------------------
     # Resetea la posición del potenciador
     def resetPotenciador(self, potenciador, game):
-        if potenciador.timer >= 500 and not game.potenciador_active:
+        if potenciador.timer >= 500 and not potenciador.isActive:
             potenciador.reset_position()
             potenciador.timer = 0
         else:
@@ -241,7 +238,6 @@ class FroggerGameLogic:
     def potenciadorActive(self, potenciador, game):
         if potenciador.active_timer > 0:
             potenciador.active_timer -= 1
-        elif potenciador.active_timer == 0 and game.potenciador_active:  # Reseteamos la velocidad cuando el potenciador se termina
-            game.reset_speed()
-            game.desactivarPotenciador()
+        elif potenciador.active_timer == 0 and potenciador.isActive:  # Reseteamos la velocidad cuando el potenciador se termina
+            potenciador.desactivar()
     # ---------------------------------------------------------
