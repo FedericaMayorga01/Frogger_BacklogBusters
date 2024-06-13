@@ -7,7 +7,7 @@ class Game():
         self.time = 30
         self.gameInit = 0
         self.timeMusic = 1800
-        self.currentMusic = 2
+        self.currentMusic = 1
 
     # Incrementa el nivel
     def incLevel(self):
