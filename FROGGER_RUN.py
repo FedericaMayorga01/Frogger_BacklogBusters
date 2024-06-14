@@ -5,6 +5,8 @@ import pygame
 from pygame.locals import *
 from sys import exit
 from FroggerGameLogic import FroggerGameLogic
+from src.Potenciador import Potenciador
+
 
 # --- INICIALIZACION ------------------------------------------
 pygame.init()
@@ -20,9 +22,9 @@ menu_font = pygame.font.SysFont(font_name, 36)
 
 # --- IMAGENES  ----------------------------------------------
 # Carga los nombres de las imagenes a usar:
-fondo_directorio = './res/img/bg.png'
 moves_directorio = './res/img/sprite_sheets_up.png'
 rana_directorio = './res/img/frog_arrived.png'
+potenciador_directorio = './res/img/potenciador.png'
 auto1_directorio = './res/img/car1.png'
 auto2_directorio = './res/img/car2.png'
 auto3_directorio = './res/img/car3.png'
@@ -31,9 +33,9 @@ auto5_directorio = './res/img/car5.png'
 tronco_directorio = './res/img/tronco.png'
 
 # Convierte las imagenes en objetos dinamicos
-fondo = pygame.image.load(fondo_directorio).convert()
 animacion = pygame.image.load(moves_directorio).convert_alpha()
 rana = pygame.image.load(rana_directorio).convert_alpha()
+potenciador_sprite = pygame.image.load(potenciador_directorio).convert_alpha()
 auto1 = pygame.image.load(auto1_directorio).convert_alpha()
 auto2 = pygame.image.load(auto2_directorio).convert_alpha()
 auto3 = pygame.image.load(auto3_directorio).convert_alpha()
@@ -56,6 +58,8 @@ musica_fondo1.play(-1)
 text_info = menu_font.render(('Presiona cualquier tecla para iniciar!'), 1, (0, 0, 0))
 gameInit = 0
 function = FroggerGameLogic()
+glb = Global()
+
 
 # Inicializa el juego
 while gameInit == 0:
@@ -66,8 +70,9 @@ while gameInit == 0:
             gameInit = 1
 
      # Dibuja el fondo y el texto del menú en la pantalla
-    Global.screen.blit(fondo, (0, 0))
-    Global.screen.blit(text_info, (5, 150))
+    glb.setFondo()
+    glb.setScreen()
+    glb.setText(text_info, (5, 150))
     pygame.display.update()
 
 # Luego de presionar alguna tecla
@@ -92,6 +97,15 @@ while True:
     game.setTimeMusic(ticks_time_musica)
     pressed_keys = 0
     key_pressed = 0
+
+    # ---------------------------------------------------------
+    # Creamos un potenciador
+    potenciador = Potenciador(potenciador_sprite)
+
+    # Agregamos los OBSERVERS del potenciador
+    potenciador.add_observer(game)
+    potenciador.add_observer(glb)
+    # ---------------------------------------------------------
 
     # Ciclo principal de juego
     while frog.vidas > 0:
@@ -120,18 +134,26 @@ while True:
         if game.time == 0:
             frog.frogDead(game)
 
+        # ---------------------------------------------------------
+        # Resetea la posición del potenciador
+        function.resetPotenciador(potenciador)
+
+        # Si el potenciador está activo, disminuye el tiempo restante
+        function.potenciadorActive(potenciador)
+        # ---------------------------------------------------------
+
+        # Agrega elementos extra
+        function.createEnemys(ticks_enemys, enemys, game, potenciador, auto1, auto2, auto3, auto4, auto5)
+        function.createPlataform(ticks_plataforms, plataforms, game, potenciador, tronco)
         # Va rotando la música de fondo
         function.tiempoMusica(game, musica_fondo1, musica_fondo2, ticks_time_musica)
 
-        # Agrega elementos extra
-        function.createEnemys(ticks_enemys, enemys, game, auto1, auto2, auto3, auto4, auto5)
-        function.createPlataform(ticks_plataforms, plataforms, game, tronco)
 
         # Mueve los elementos extra
         function.moveList(enemys, game.speed)
         function.moveList(plataforms, game.speed)
 
-        function.ubicacion_rana(frog, enemys, plataforms, llegadas, game, musica_perder, musica_agua, musica_exito, rana)
+        function.ubicacion_rana(frog, enemys, plataforms, llegadas, game, musica_perder, musica_agua, musica_exito, rana, potenciador, ticks_enemys, ticks_plataforms)
 
         function.nextLevel(llegadas, frog, game)
 
@@ -139,14 +161,20 @@ while True:
         text_info1 = info_font.render(('Nivel: {0}               Puntos: {1}'.format(game.level, game.points)), 1, (255, 255, 255))
         text_info2 = info_font.render(('Tiempo: {0}           Vidas: {1}'.format(game.time, frog.vidas)), 1, (255, 255, 255))
         # Se dibuja el fondo y la informacion en pantalla
-        Global.screen.blit(fondo, (0, 0))
-        Global.screen.blit(text_info1, (10, 520))
-        Global.screen.blit(text_info2, (250, 520))
+        glb.setScreen()
+        glb.setText(text_info1, (10, 520))
+        glb.setText(text_info2, (250, 520))
 
         # Dibuja los elementos extras
         function.drawList(enemys)
         function.drawList(plataforms)
         function.drawList(llegadas)
+
+        # ---------------------------------------------------------
+        # Dibuja el potenciador si no esta activo
+        if not potenciador.isActive:
+            potenciador.draw()
+        # ---------------------------------------------------------
 
         # Movimientos y animaciones de la rana
         frog.animateFrog(key_pressed,key_up)
@@ -167,14 +195,15 @@ while True:
             if event.type == KEYDOWN:
                 gameInit = 0
 
-        Global.screen.blit(fondo, (0, 0))
+        glb.setFondo()
+        glb.setScreen()
         # Define los textos de la pantalla
         text = game_font.render('GAME OVER', 1, (255, 0, 0))
         text_points = game_font.render(('Puntuacion: {0}'.format(game.points)), 1, (255, 0, 0))
         text_reiniciar = info_font.render('Presione cualquier tecla para reiniciar!', 1, (255, 0, 0))
         # Se dibuja el texto sobre la pantalla
-        Global.screen.blit(text, (75, 120))
-        Global.screen.blit(text_points, (10, 170))
-        Global.screen.blit(text_reiniciar, (70, 250))
+        glb.setText(text, (75, 120))
+        glb.setText(text_points, (10, 170))
+        glb.setText(text_reiniciar, (70, 250))
 
         pygame.display.update()
