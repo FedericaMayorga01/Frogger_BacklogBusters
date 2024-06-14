@@ -7,7 +7,7 @@ on:
   # Cada vez que se hace un push a esta branch
   push:
     branches:
-      - featureVelocidadAutos
+      - develop
 
   # Cada vez que se hace un pull request
   pull_request:
