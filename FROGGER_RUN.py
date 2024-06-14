@@ -7,6 +7,7 @@ from sys import exit
 from FroggerGameLogic import FroggerGameLogic
 from src.Potenciador import Potenciador
 
+
 # --- INICIALIZACION ------------------------------------------
 pygame.init()
 pygame.font.init()
@@ -46,18 +47,19 @@ tronco = pygame.image.load(tronco_directorio).convert_alpha()
 musica_perder = pygame.mixer.Sound('./res/sounds/boom.wav')
 musica_agua = pygame.mixer.Sound('./res/sounds/agua.wav')
 musica_exito = pygame.mixer.Sound('./res/sounds/success.wav')
-musica_fondo = pygame.mixer.Sound('./res/sounds/guimo.wav')
+musica_fondo1 = pygame.mixer.Sound('./res/sounds/guimo.wav')
+musica_fondo2 = pygame.mixer.Sound('./res/sounds/guimo2.wav')
 
 pygame.display.set_caption('Frogger')
 clock = pygame.time.Clock()
 
 #--- INICIALIZA EL JUEGO -------------------------------------
-musica_fondo.play(-1)
+musica_fondo1.play(-1)
 text_info = menu_font.render(('Presiona cualquier tecla para iniciar!'), 1, (0, 0, 0))
 gameInit = 0
 function = FroggerGameLogic()
-
 glb = Global()
+
 
 # Inicializa el juego
 while gameInit == 0:
@@ -91,6 +93,8 @@ while True:
     # Frecuencia de las plataformas
     ticks_plataforms = [0, 0, 30, 30, 30]
     ticks_time = 30
+    ticks_time_musica = 1800
+    game.setTimeMusic(ticks_time_musica)
     pressed_keys = 0
     key_pressed = 0
 
@@ -141,6 +145,9 @@ while True:
         # Agrega elementos extra
         function.createEnemys(ticks_enemys, enemys, game, potenciador, auto1, auto2, auto3, auto4, auto5)
         function.createPlataform(ticks_plataforms, plataforms, game, potenciador, tronco)
+        # Va rotando la música de fondo
+        function.tiempoMusica(game, musica_fondo1, musica_fondo2, ticks_time_musica)
+
 
         # Mueve los elementos extra
         function.moveList(enemys, game.speed)

@@ -11,6 +11,8 @@ class Game(Observer):
         self.points = 0
         self.time = 30
         self.gameInit = 0
+        self.timeMusic = 1800
+        self.currentMusic = 1
 
     # Incrementa el nivel
     def incLevel(self):
@@ -22,12 +24,12 @@ class Game(Observer):
         self.base_speed = self.speed + 1
 
     # Incrementa los puntos
-    def incPoints(self,points):
+    def incPoints(self, points):
         self.points = self.points + points
 
     # Decrementa el tiempo restante de juego
     def decTime(self):
-        self.time = self.time - 1
+        self.time=self.time-1
 
     # Restablece el tiempo
     def resetTime(self):
@@ -46,3 +48,10 @@ class Game(Observer):
                 self.scale_speed(0.5)
             else:
                 self.reset_speed()
+                
+    def setTimeMusic(self, timeMusic):
+        self.timeMusic = timeMusic
+
+    def decTimeMusic(self):
+        self.timeMusic -=1
+
