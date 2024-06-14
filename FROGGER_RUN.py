@@ -21,7 +21,6 @@ menu_font = pygame.font.SysFont(font_name, 36)
 
 # --- IMAGENES  ----------------------------------------------
 # Carga los nombres de las imagenes a usar:
-fondo_directorio = './res/img/bg.png'
 moves_directorio = './res/img/sprite_sheets_up.png'
 rana_directorio = './res/img/frog_arrived.png'
 potenciador_directorio = './res/img/potenciador.png'
@@ -33,7 +32,6 @@ auto5_directorio = './res/img/car5.png'
 tronco_directorio = './res/img/tronco.png'
 
 # Convierte las imagenes en objetos dinamicos
-fondo = pygame.image.load(fondo_directorio).convert()
 animacion = pygame.image.load(moves_directorio).convert_alpha()
 rana = pygame.image.load(rana_directorio).convert_alpha()
 potenciador_sprite = pygame.image.load(potenciador_directorio).convert_alpha()
@@ -59,6 +57,8 @@ text_info = menu_font.render(('Presiona cualquier tecla para iniciar!'), 1, (0, 
 gameInit = 0
 function = FroggerGameLogic()
 
+glb = Global()
+
 # Inicializa el juego
 while gameInit == 0:
     for event in pygame.event.get():
@@ -68,8 +68,9 @@ while gameInit == 0:
             gameInit = 1
 
      # Dibuja el fondo y el texto del menú en la pantalla
-    Global.screen.blit(fondo, (0, 0))
-    Global.screen.blit(text_info, (5, 150))
+    glb.setFondo()
+    glb.setScreen()
+    glb.setText(text_info, (5, 150))
     pygame.display.update()
 
 # Luego de presionar alguna tecla
@@ -97,8 +98,9 @@ while True:
     # Creamos un potenciador
     potenciador = Potenciador(potenciador_sprite)
 
-    # Agregamos a game como OBSERVER del potenciador
+    # Agregamos los OBSERVERS del potenciador
     potenciador.add_observer(game)
+    potenciador.add_observer(glb)
     # ---------------------------------------------------------
 
     # Ciclo principal de juego
@@ -152,9 +154,9 @@ while True:
         text_info1 = info_font.render(('Nivel: {0}               Puntos: {1}'.format(game.level, game.points)), 1, (255, 255, 255))
         text_info2 = info_font.render(('Tiempo: {0}           Vidas: {1}'.format(game.time, frog.vidas)), 1, (255, 255, 255))
         # Se dibuja el fondo y la informacion en pantalla
-        Global.screen.blit(fondo, (0, 0))
-        Global.screen.blit(text_info1, (10, 520))
-        Global.screen.blit(text_info2, (250, 520))
+        glb.setScreen()
+        glb.setText(text_info1, (10, 520))
+        glb.setText(text_info2, (250, 520))
 
         # Dibuja los elementos extras
         function.drawList(enemys)
@@ -186,14 +188,15 @@ while True:
             if event.type == KEYDOWN:
                 gameInit = 0
 
-        Global.screen.blit(fondo, (0, 0))
+        glb.setFondo()
+        glb.setScreen()
         # Define los textos de la pantalla
         text = game_font.render('GAME OVER', 1, (255, 0, 0))
         text_points = game_font.render(('Puntuacion: {0}'.format(game.points)), 1, (255, 0, 0))
         text_reiniciar = info_font.render('Presione cualquier tecla para reiniciar!', 1, (255, 0, 0))
         # Se dibuja el texto sobre la pantalla
-        Global.screen.blit(text, (75, 120))
-        Global.screen.blit(text_points, (10, 170))
-        Global.screen.blit(text_reiniciar, (70, 250))
+        glb.setText(text, (75, 120))
+        glb.setText(text_points, (10, 170))
+        glb.setText(text_reiniciar, (70, 250))
 
         pygame.display.update()

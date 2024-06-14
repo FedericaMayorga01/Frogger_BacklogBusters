@@ -1,15 +1,14 @@
 import unittest
 from unittest.mock import Mock
 import random
-
 import pygame
-
 from FroggerGameLogic import FroggerGameLogic
 from src.Frog import Frog
 from src.Game import Game
 from src.Potenciador import Potenciador
 
 class TestPotenciador(unittest.TestCase):
+
     def setUp(self):
         mock_animation = pygame.Surface((120,30))
         self.frog = Frog([100,400], mock_animation)
@@ -27,10 +26,12 @@ class TestPotenciador(unittest.TestCase):
         ticks_enemys = []
         ticks_plataforms = []
 
+        self.potenciador.add_observer(self.game)
+
         self.function.ubicacion_rana(self.frog, enemys, Mock(), Mock(), self.game, Mock(), Mock(), Mock(),
                                     Mock(), self.potenciador, ticks_enemys, ticks_plataforms)
 
-        self.game.activarPotenciador.assert_called_once()
+        self.game.update.assert_called_once()
 
     def test_disappear(self):
         """DADO que se está en una partida activa CUANDO el jugador agarra
@@ -55,6 +56,8 @@ class TestPotenciador(unittest.TestCase):
         ticks_enemys = []
         ticks_plataforms = []
 
+        self.potenciador.add_observer(game)
+
         self.function.ubicacion_rana(self.frog, enemys, Mock(), Mock(), game, Mock(), Mock(), Mock(),
                                      Mock(), self.potenciador, ticks_enemys, ticks_plataforms)
 
@@ -67,7 +70,7 @@ class TestPotenciador(unittest.TestCase):
         position_inic = self.potenciador.position
 
         # Forzamos que el potenciador no este activo
-        self.game.potenciador_active = False
+        self.potenciador.isActive = False
 
         self.potenciador.timer = 500
         self.function.resetPotenciador(self.potenciador, self.game)
@@ -78,7 +81,7 @@ class TestPotenciador(unittest.TestCase):
         """DADO que el jugador agarra un potenciador CUANDO todavia no ha pasado el tiempo
         de accion completo ENTONCES el potenciador sigue activo"""
 
-        self.game.potenciador_active = True
+        self.potenciador.isActive = True
         self.potenciador.active_timer = 10
 
         self.function.potenciadorActive(self.potenciador, self.game)
@@ -89,11 +92,12 @@ class TestPotenciador(unittest.TestCase):
     def test_end_boost_positive(self):
         """DADO que el jugador agarra un potenciador CUANDO pasa el tiempo de accion completo
         ENTONCES el potenciador termina de hacer efecto"""
+        self.potenciador.add_observer(self.game)
 
-        self.game.potenciador_active = True
+        self.potenciador.isActive = True
         self.potenciador.active_timer = 0
 
         self.function.potenciadorActive(self.potenciador, self.game)
 
         # Al haber terminado tiene que haber reseteado la velocidad
-        self.game.reset_speed.assert_called_once()
+        self.game.update.assert_called_once()
