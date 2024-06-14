@@ -227,7 +227,7 @@ class FroggerGameLogic:
 
     # ---------------------------------------------------------
     # Resetea la posición del potenciador
-    def resetPotenciador(self, potenciador, game):
+    def resetPotenciador(self, potenciador):
         if potenciador.timer >= 500 and not potenciador.isActive:
             potenciador.reset_position()
             potenciador.timer = 0
@@ -235,7 +235,7 @@ class FroggerGameLogic:
             potenciador.timer += 1
 
     # Si el potenciador está activo, disminuye el tiempo restante
-    def potenciadorActive(self, potenciador, game):
+    def potenciadorActive(self, potenciador):
         if potenciador.active_timer > 0:
             potenciador.active_timer -= 1
         elif potenciador.active_timer == 0 and potenciador.isActive:  # Reseteamos la velocidad cuando el potenciador se termina

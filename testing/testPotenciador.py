@@ -73,7 +73,7 @@ class TestPotenciador(unittest.TestCase):
         self.potenciador.isActive = False
 
         self.potenciador.timer = 500
-        self.function.resetPotenciador(self.potenciador, self.game)
+        self.function.resetPotenciador(self.potenciador)
 
         self.assertNotEqual(self.potenciador.position, position_inic)
 
@@ -84,7 +84,7 @@ class TestPotenciador(unittest.TestCase):
         self.potenciador.isActive = True
         self.potenciador.active_timer = 10
 
-        self.function.potenciadorActive(self.potenciador, self.game)
+        self.function.potenciadorActive(self.potenciador)
 
         # Al no haber terminado no tiene que haber cambiado la velocidad
         self.game.reset_speed.assert_not_called()
@@ -97,7 +97,7 @@ class TestPotenciador(unittest.TestCase):
         self.potenciador.isActive = True
         self.potenciador.active_timer = 0
 
-        self.function.potenciadorActive(self.potenciador, self.game)
+        self.function.potenciadorActive(self.potenciador)
 
         # Al haber terminado tiene que haber reseteado la velocidad
         self.game.update.assert_called_once()

@@ -132,10 +132,10 @@ while True:
 
         # ---------------------------------------------------------
         # Resetea la posición del potenciador
-        function.resetPotenciador(potenciador, game)
+        function.resetPotenciador(potenciador)
 
         # Si el potenciador está activo, disminuye el tiempo restante
-        function.potenciadorActive(potenciador, game)
+        function.potenciadorActive(potenciador)
         # ---------------------------------------------------------
 
         # Agrega elementos extra
