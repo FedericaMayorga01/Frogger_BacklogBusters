@@ -26,7 +26,7 @@ class FroggerGameLogic:
                 list.remove(i)
 
     # Elimina las plataformas que se pasan de los limites pantalla
-    def destroyPlataforms(self,list):
+    def destroyPlataforms(self, list):
         for i in list:
             if i.position[0] < -100:
                 list.remove(i)
@@ -34,7 +34,7 @@ class FroggerGameLogic:
                 list.remove(i)
 
     # Inicializa el enemigo
-    def createEnemys(self,list, enemys, game, auto1, auto2, auto3, auto4, auto5):
+    def createEnemys(self, list, enemys, game, auto1, auto2, auto3, auto4, auto5):
         # list = contaodres para controlar el tiempo entre la creacion de enemigos
         for i, tick in enumerate(list):
             list[i] = list[i] - 1
@@ -148,7 +148,6 @@ class FroggerGameLogic:
             elif wayPlataform == "left":
                 frog.position[0] = frog.position[0] - game.speed
 
-
     # Da la ubicacion de la rana y llama a las funciones correspondientes
     def ubicacion_rana(self, frog, enemys, plataforms, llegadas, game, musica_perder, musica_agua, musica_exito, rana):
         # Si esta en la carretera
@@ -213,3 +212,18 @@ class FroggerGameLogic:
             frog.animation_counter = 0
             frog.animation_tick = 1
             frog.can_move = 1
+
+    # Va rotando la música de fondo
+    def tiempoMusica(self, game, musica1, musica2, ticks_time_musica):
+        if not game.timeMusic:  # Si el tiempo esta en 0
+            game.setTimeMusic(ticks_time_musica)  # reseteo el contador
+            if game.currentMusic == 1:
+                musica1.stop()
+                musica2.play(-1)
+                game.currentMusic = 2
+            else:
+                musica2.stop()
+                musica1.play(-1)
+                game.currentMusic = 1
+        else:
+            game.decTimeMusic()
