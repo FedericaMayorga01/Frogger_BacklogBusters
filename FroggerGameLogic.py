@@ -241,19 +241,3 @@ class FroggerGameLogic:
         elif potenciador.active_timer == 0 and potenciador.isActive:  # Reseteamos la velocidad cuando el potenciador se termina
             potenciador.desactivar()
     # ---------------------------------------------------------
-    
-    # Va rotando la música de fondo
-    def tiempoMusica(self, game, musica1, musica2, ticks_time_musica):
-        if not game.timeMusic:  # Si el tiempo esta en 0
-            game.setTimeMusic(ticks_time_musica)  # reseteo el contador
-            if game.currentMusic == 1:
-                musica1.stop()
-                musica2.play(-1)
-                game.currentMusic = 2
-            else:
-                musica2.stop()
-                musica1.play(-1)
-                game.currentMusic = 1
-        else:
-            game.decTimeMusic()
-
