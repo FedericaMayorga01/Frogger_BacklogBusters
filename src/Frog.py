@@ -40,6 +40,7 @@ class Frog(Object):
     def mover_rana(self,key_pressed, key_up):
     # TODO:     Aún necesitamos manejar los límites de la pantalla
     #           El movimiento horizontal aún no está correcto
+    #           Identificar los valores y ponerlos as variables
         # Si el contador esta en cero, la animacion debe cambiar segun a donde se movio
         if self.animation_counter == 0 :
             # LLama al metodo para cargar la prox animacion

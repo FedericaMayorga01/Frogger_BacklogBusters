@@ -7,8 +7,7 @@ on:
   # Cada vez que se hace un push a esta branch
   push:
     branches:
-      - develop
-
+      - main
 
   # Cada vez que se hace un pull request
   pull_request:
