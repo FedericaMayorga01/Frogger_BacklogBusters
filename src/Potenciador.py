@@ -1,7 +1,6 @@
 from diseñoObserver.Sujeto import Sujeto
 from src.Object import Object
 import random
-from src.Global import Global as glb
 
 class Potenciador(Object, Sujeto):
     def __init__(self, sprite):

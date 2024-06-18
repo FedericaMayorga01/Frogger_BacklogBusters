@@ -1,7 +1,6 @@
 from diseñoObserver.Observer import Observer
 from src.Potenciador import Potenciador
 
-
 # Estado del juego
 class Game(Observer):
     def __init__(self, speed, level):
@@ -11,8 +10,6 @@ class Game(Observer):
         self.points = 0
         self.time = 30
         self.gameInit = 0
-        self.timeMusic = 1800
-        self.currentMusic = 1
 
     # Incrementa el nivel
     def incLevel(self):
@@ -48,10 +45,3 @@ class Game(Observer):
                 self.scale_speed(0.5)
             else:
                 self.reset_speed()
-                
-    def setTimeMusic(self, timeMusic):
-        self.timeMusic = timeMusic
-
-    def decTimeMusic(self):
-        self.timeMusic -=1
-

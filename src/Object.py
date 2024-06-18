@@ -1,5 +1,6 @@
 from pygame.locals import *
 from src.Global import Global as glb
+
 class Object():
     def __init__(self,position,sprite):  #Inicializa el objeto, con su posicion y dibujo (sprite)
         self.sprite = sprite
