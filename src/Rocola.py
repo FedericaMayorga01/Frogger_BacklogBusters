@@ -1,4 +1,3 @@
-import pygame
 from diseñoObserver.Observer import Observer
 from src.Potenciador import Potenciador
 

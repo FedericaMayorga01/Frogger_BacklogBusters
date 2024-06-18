@@ -2,7 +2,6 @@ from src.Enemy import Enemy
 from src.Object import Object
 from src.Plataform import Plataform
 
-
 class FroggerGameLogic:
     def __init__(self):
         pass

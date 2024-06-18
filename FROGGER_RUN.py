@@ -18,8 +18,6 @@ game_font = pygame.font.SysFont(font_name, 72)
 info_font = pygame.font.SysFont(font_name, 24)
 menu_font = pygame.font.SysFont(font_name, 36)
 
-#screen = pygame.display.set_mode((448,546), 0, 32) #Crea la ventana de juego
-
 # --- IMAGENES  ----------------------------------------------
 # Carga los nombres de las imagenes a usar:
 moves_directorio = './res/img/sprite_sheets_up.png'
@@ -57,9 +55,12 @@ clock = pygame.time.Clock()
 #--- INICIALIZA EL JUEGO -------------------------------------
 text_info = menu_font.render(('Presiona cualquier tecla para iniciar!'), 1, (0, 0, 0))
 gameInit = 0
+
+# ---------------------------------------------------------------
 function = FroggerGameLogic()
 glb = Global()
 rocola = Rocola(musica_fondo1, musica_fondo2, musica_potenciador)
+# ---------------------------------------------------------------
 
 # Inicializa el juego
 while gameInit == 0:
@@ -69,7 +70,7 @@ while gameInit == 0:
         if event.type == KEYDOWN:
             gameInit = 1
 
-     # Dibuja el fondo y el texto del menú en la pantalla
+    # Dibuja el fondo y el texto del menú en la pantalla
     glb.setFondo()
     glb.setScreen()
     glb.setText(text_info, (5, 150))
@@ -87,8 +88,7 @@ while True:
     enemys = []
     plataforms = []
     llegadas = []
-    # 30 ticks == 1 segundo
-    # Frecuencia de los enemigos
+    # Frecuencia de los enemigos / 30 ticks == 1 segundo
     ticks_enemys = [30, 0, 30, 0, 60]
     # Frecuencia de las plataformas
     ticks_plataforms = [0, 0, 30, 30, 30]
@@ -144,9 +144,11 @@ while True:
         # Agrega elementos extra
         function.createEnemys(ticks_enemys, enemys, game, potenciador, auto1, auto2, auto3, auto4, auto5)
         function.createPlataform(ticks_plataforms, plataforms, game, potenciador, tronco)
+
+        # ---------------------------------------------------------
         # Va rotando la música de fondo
         rocola.tiempoMusica()
-
+        # ---------------------------------------------------------
 
         # Mueve los elementos extra
         function.moveList(enemys, game.speed)
@@ -179,9 +181,11 @@ while True:
         frog.animateFrog(key_pressed,key_up)
         frog.draw()
 
+        # ---------------------------------------------------------
         # Destruye los elementos extra que salen de pantalla
         function.destroyEnemys(enemys)
         function.destroyPlataforms(plataforms)
+        # ---------------------------------------------------------
 
         pygame.display.update()
         time_passed = clock.tick(30)
@@ -196,10 +200,12 @@ while True:
 
         glb.setFondo()
         glb.setScreen()
+
         # Define los textos de la pantalla
         text = game_font.render('GAME OVER', 1, (255, 0, 0))
         text_points = game_font.render(('Puntuacion: {0}'.format(game.points)), 1, (255, 0, 0))
         text_reiniciar = info_font.render('Presione cualquier tecla para reiniciar!', 1, (255, 0, 0))
+
         # Se dibuja el texto sobre la pantalla
         glb.setText(text, (75, 120))
         glb.setText(text_points, (10, 170))
